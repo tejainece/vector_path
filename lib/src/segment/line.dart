@@ -62,6 +62,18 @@ class LineSegment extends Segment with ILine {
   bool operator ==(other) =>
       other is LineSegment && other.p1.isEqual(p1) && other.p2.isEqual(p2);
 
+  P pointAt(double x) => P(x, slope * x + yIntercept);
+
+  double get yIntercept => p1.y - slope * p1.x;
+
+  double lerpX(double t) => p1.x + (p2.x - p1.x) * t;
+
+  @override
+  P pointAtInterval(double t) {
+    double atX = lerpX(t);
+    return P(atX, slope * atX + yIntercept);
+  }
+
   @override
   int get hashCode => Object.hash(p1, p2);
 
@@ -78,4 +90,17 @@ class Line with ILine {
 
   @override
   double get slope => angle.slope;
+}
+
+extension PointsLineSegmentExt on Iterable<P> {
+  List<LineSegment> toLines() {
+    final lines = <LineSegment>[];
+    if (length < 2) return lines;
+    P pivot = first;
+    for (final cur in skip(1)) {
+      lines.add(LineSegment(pivot, cur));
+      pivot = cur;
+    }
+    return lines;
+  }
 }

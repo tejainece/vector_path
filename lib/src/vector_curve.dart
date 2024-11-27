@@ -2,18 +2,19 @@ import 'dart:collection';
 
 import 'segment/segment.dart';
 
-typedef Smoother = void Function();
+typedef SegmentTransformer = List<Segment> Function(
+    P prev, Segment cur, P next);
 
 class VectorCurve {
   final List<Segment> _segments;
 
   VectorCurve._(this._segments);
 
-  factory VectorCurve(List<Segment> segments) {
-    return VectorCurve._([...segments]);
+  factory VectorCurve(Iterable<Segment> segments) {
+    return VectorCurve._(List.from(segments));
   }
 
-  void smooth(Smoother smoother) {
+  void smooth(SegmentTransformer smoother) {
     // TODO
   }
 
@@ -23,15 +24,17 @@ class VectorCurve {
 
   bool get isNotEmpty => _segments.isNotEmpty;
 
-  bool isClosed() {
-    if (isEmpty) return false;
-    return _segments.first.p1 == _segments.last.p2;
-  }
+  bool isClosed() => _segments.isClosed();
 
-  // TODO split into sub paths
+  VectorCurve transform(SegmentTransformer smoother,
+          {P? controlStart, P? controlEnd}) =>
+      VectorCurve(_segments.transform(smoother,
+          controlStart: controlStart, controlEnd: controlEnd));
+
+// TODO split into sub paths
 }
 
-extension SegementsExt on Iterable<Segment> {
+extension SegementsExt on List<Segment> {
   String? validate() {
     if (isEmpty) return null;
 
@@ -51,14 +54,26 @@ extension SegementsExt on Iterable<Segment> {
     if (isEmpty) return false;
     return first.p1 == last.p2;
   }
-}
 
-class VectorLayer {
-  final List<VectorCurve> curves;
+  VectorCurve toCurve() => VectorCurve(this);
 
-  VectorLayer._(this.curves);
+  List<Segment> transform(SegmentTransformer smoother,
+      {P? controlStart, P? controlEnd}) {
+    if (length < 2) return toList();
 
-  factory VectorLayer(List<VectorCurve> curves) {
-    return VectorLayer._([...curves]);
+    final ret = <Segment>[];
+    P cp1 = first.p1;
+    if (controlStart != null) {
+      cp1 = controlStart;
+    }
+
+    for (int i = 0; i < length - 1; i++) {
+      final cur = this[i];
+      final next = this[i + 1];
+      ret.addAll(smoother(cp1, cur, next.p2));
+      cp1 = cur.p1;
+    }
+    ret.addAll(smoother(cp1, last, controlEnd ?? last.p2));
+    return ret;
   }
 }

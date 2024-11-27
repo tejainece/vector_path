@@ -1,7 +1,7 @@
 name: vector_path
 description: Vector geometry library for Dart to manipulate vector path consisting of lines, bezier quadratic curve, bezier cubic curve and arc
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1
+repository: https://github.com/tejainece/vector_path
 
 environment:
   sdk: ^3.6.0-334.4.beta

@@ -4,3 +4,4 @@ library;
 export 'src/vector_curve.dart';
 export 'src/primitive/primitive.dart';
 export 'src/segment/segment.dart';
+export 'src/smoother/smoother.dart';

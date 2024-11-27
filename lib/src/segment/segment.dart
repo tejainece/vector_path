@@ -21,4 +21,8 @@ abstract class Segment {
   LineSegment get p1Tangent;
 
   LineSegment get p2Tangent;
+
+  LineSegment get line => LineSegment(p1, p2);
+
+  P pointAtInterval(double t);
 }

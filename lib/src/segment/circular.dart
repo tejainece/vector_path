@@ -29,4 +29,10 @@ class CircularArcSegment extends Segment {
     // TODO
     throw UnimplementedError();
   }
+
+  @override
+  P pointAtInterval(double t) {
+    // TODO
+    throw UnimplementedError();
+  }
 }
