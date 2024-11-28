@@ -24,5 +24,11 @@ abstract class Segment {
 
   LineSegment get line => LineSegment(p1, p2);
 
+  double get length;
+
   P pointAtInterval(double t);
+
+  double intervalAtPoint(P point);
+
+  (Segment, Segment) splitAtInterval(double t);
 }

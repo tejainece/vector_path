@@ -75,6 +75,18 @@ class LineSegment extends Segment with ILine {
   }
 
   @override
+  double intervalAtPoint(P point) => (point.x - p1.x) / (p2.x - p1.x);
+
+  @override
+  (LineSegment, LineSegment) splitAtInterval(double t) {
+    final point = pointAtInterval(t);
+    return (LineSegment(p1, point), LineSegment(point, p2));
+  }
+
+  @override
+  double get length => p1.distanceTo(p2);
+
+  @override
   int get hashCode => Object.hash(p1, p2);
 
   @override

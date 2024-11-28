@@ -13,11 +13,6 @@ class CircularArcSegment extends Segment {
   CircularArcSegment(this.p1, this.p2, this.radius,
       {this.largeArc = false, this.clockwise = true});
 
-  double get center {
-    // TODO
-    throw UnimplementedError();
-  }
-
   @override
   LineSegment get p1Tangent {
     // TODO
@@ -31,7 +26,30 @@ class CircularArcSegment extends Segment {
   }
 
   @override
+  double get length {
+    // TODO
+    throw UnimplementedError();
+  }
+
+  double get center {
+    // TODO
+    throw UnimplementedError();
+  }
+
+  @override
   P pointAtInterval(double t) {
+    // TODO
+    throw UnimplementedError();
+  }
+
+  @override
+  double intervalAtPoint(P point) {
+    // TODO
+    throw UnimplementedError();
+  }
+
+  @override
+  (CircularArcSegment, CircularArcSegment) splitAtInterval(double t) {
     // TODO
     throw UnimplementedError();
   }

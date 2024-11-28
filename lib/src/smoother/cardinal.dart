@@ -7,8 +7,11 @@ SegmentTransformer cardinalSmoother({double tension = 2}) {
     final p2Prime = (c2 - segment.p1) / tension;
 
     return [
-      CubicSegment(segment.p1, segment.p2, segment.p1 + p1Prime / 3,
-          segment.p2 - p2Prime / 3),
+      CubicSegment(
+          p1: segment.p1,
+          p2: segment.p2,
+          c1: segment.p1 + p1Prime / 3,
+          c2: segment.p2 - p2Prime / 3),
     ];
   };
 }
