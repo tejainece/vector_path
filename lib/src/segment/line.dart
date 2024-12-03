@@ -69,17 +69,14 @@ class LineSegment extends Segment with ILine {
   double lerpX(double t) => p1.x + (p2.x - p1.x) * t;
 
   @override
-  P pointAtInterval(double t) {
-    double atX = lerpX(t);
-    return P(atX, slope * atX + yIntercept);
-  }
+  P lerp(double t) => p1 * (1 - t) + p2 * t;
 
   @override
-  double intervalAtPoint(P point) => (point.x - p1.x) / (p2.x - p1.x);
+  double ilerp(P point) => (point.x - p1.x) / (p2.x - p1.x);
 
   @override
-  (LineSegment, LineSegment) splitAtInterval(double t) {
-    final point = pointAtInterval(t);
+  (LineSegment, LineSegment) bifurcateAtInterval(double t) {
+    final point = lerp(t);
     return (LineSegment(p1, point), LineSegment(point, p2));
   }
 

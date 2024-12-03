@@ -1,5 +1,10 @@
+import 'package:vector_path/src/mapper/mapper.dart';
 import 'package:vector_path/src/segment/segment.dart';
-import 'package:vector_path/src/vector_curve.dart';
+
+SegmentMapper catmullRomSmoother({int steps = 100, double tension = 0.5}) {
+  return (P cp1, Segment segment, P cp2) =>
+      segment.line.catmullRomInterpolate(steps, tension, cp1, cp2);
+}
 
 /// https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Unit_interval_(0,_1)
 P catmullRomLerp(P cp0, P p0, P p1, P cp1, double t) {
@@ -36,9 +41,4 @@ extension CatmullRomLineExt on LineSegment {
     ret.add(LineSegment(pivot, p2));
     return ret;
   }
-}
-
-SegmentTransformer catmullRomSmoother({int steps = 100, double tension = 0.5}) {
-  return (P cp1, Segment segment, P cp2) =>
-      segment.line.catmullRomInterpolate(steps, tension, cp1, cp2);
 }

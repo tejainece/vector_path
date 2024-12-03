@@ -37,19 +37,19 @@ class CircularArcSegment extends Segment {
   }
 
   @override
-  P pointAtInterval(double t) {
+  P lerp(double t) {
     // TODO
     throw UnimplementedError();
   }
 
   @override
-  double intervalAtPoint(P point) {
+  double ilerp(P point) {
     // TODO
     throw UnimplementedError();
   }
 
   @override
-  (CircularArcSegment, CircularArcSegment) splitAtInterval(double t) {
+  (CircularArcSegment, CircularArcSegment) bifurcateAtInterval(double t) {
     // TODO
     throw UnimplementedError();
   }

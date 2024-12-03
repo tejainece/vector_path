@@ -17,32 +17,23 @@ class QuadraticSegment extends Segment {
   LineSegment get p2Tangent => LineSegment(c, p2);
 
   @override
-  P pointAtInterval(double t) => P(quadraticBezierLerp(p1.x, c.x, p2.x, t),
+  P lerp(double t) => P(quadraticBezierLerp(p1.x, c.x, p2.x, t),
       quadraticBezierLerp(p1.y, c.y, p2.y, t));
 
   @override
-  double intervalAtPoint(P point) {
+  double ilerp(P point) {
     // TODO
     throw UnimplementedError();
   }
 
-  /*
-          """Returns two segments, dividing the given segment at a point t (0->1) along the curve."""
-        p4 = self[0].lerp(self[1], t)
-        p5 = self[1].lerp(self[2], t)
-        p7 = p4.lerp(p5, t)
-        return (QuadraticBezier(self[0], p4, p7), QuadraticBezier(p7, p5, self[2]))
-   */
   @override
-  (QuadraticSegment, QuadraticSegment) splitAtInterval(double t) {
-    final curve1cp = LineSegment(p1, c).pointAtInterval(t);
-    final curve2cp = LineSegment(c, p2).pointAtInterval(t);
-    final bridge = LineSegment(curve1cp, curve2cp).pointAtInterval(t);
-    // TODO
-    throw UnimplementedError();
+  (QuadraticSegment, QuadraticSegment) bifurcateAtInterval(double t) {
+    final curve1cp = LineSegment(p1, c).lerp(t);
+    final curve2cp = LineSegment(c, p2).lerp(t);
+    final bridge = LineSegment(curve1cp, curve2cp).lerp(t);
     return (
       QuadraticSegment(p1: p1, p2: bridge, c: curve1cp),
-      QuadraticSegment(p1: bridge, p2: p2, c: curve2cp),
+      QuadraticSegment(p1: bridge, p2: p2, c: curve2cp)
     );
   }
 
@@ -73,3 +64,7 @@ double _quadraticBezierLength(P a0, P a1, P a2, double tolerance, int level) {
 
 double quadraticBezierLerp(double p0, double p1, double p2, double t) =>
     (1 - t) * (1 - t) * p0 + 2 * (1 - t) * t * p1 + t * t * p2;
+
+extension TupleExt<T> on (T, T) {
+  List<T> toList() => [$1, $2];
+}

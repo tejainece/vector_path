@@ -1,9 +1,8 @@
 import 'dart:collection';
 
-import 'segment/segment.dart';
+import 'package:vector_path/src/mapper/mapper.dart';
 
-typedef SegmentTransformer = List<Segment> Function(
-    P prev, Segment cur, P next);
+import 'segment/segment.dart';
 
 class VectorCurve {
   final List<Segment> _segments;
@@ -14,11 +13,9 @@ class VectorCurve {
     return VectorCurve._(List.from(segments));
   }
 
-  void smooth(SegmentTransformer smoother) {
-    // TODO
-  }
+  late final UnmodifiableListView<Segment> segments = UnmodifiableListView(_segments);
 
-  late final Iterable<Segment> segments = UnmodifiableListView(_segments);
+  int get numSegments => _segments.length;
 
   bool get isEmpty => _segments.isEmpty;
 
@@ -26,10 +23,12 @@ class VectorCurve {
 
   bool isClosed() => _segments.isClosed();
 
-  VectorCurve transform(SegmentTransformer smoother,
-          {P? controlStart, P? controlEnd}) =>
-      VectorCurve(_segments.transform(smoother,
-          controlStart: controlStart, controlEnd: controlEnd));
+  VectorCurve map(SegmentMapper smoother,
+          {P? controlStart, P? controlEnd}) {
+    final newSegments = _segments.transform(smoother,
+        controlStart: controlStart, controlEnd: controlEnd);
+    return VectorCurve(newSegments);
+  }
 
 // TODO split into sub paths
 }
@@ -57,9 +56,9 @@ extension SegementsExt on List<Segment> {
 
   VectorCurve toCurve() => VectorCurve(this);
 
-  List<Segment> transform(SegmentTransformer smoother,
+  List<Segment> transform(SegmentMapper smoother,
       {P? controlStart, P? controlEnd}) {
-    if (length < 2) return toList();
+    // if (length < 2) return toList();
 
     final ret = <Segment>[];
     P cp1 = first.p1;

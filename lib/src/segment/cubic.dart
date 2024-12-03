@@ -23,19 +23,27 @@ class CubicSegment extends Segment {
   double get length => _cubicBezierLength(p1, c1, c2, p2, 0.01, 0);
 
   @override
-  P pointAtInterval(double t) => P(cubicBezierLerp(p1.x, c1.x, c2.x, p2.x, t),
+  P lerp(double t) => P(cubicBezierLerp(p1.x, c1.x, c2.x, p2.x, t),
       cubicBezierLerp(p1.y, c1.y, c2.y, p2.y, t));
 
   @override
-  double intervalAtPoint(P point) {
+  double ilerp(P point) {
     // TODO
     throw UnimplementedError();
   }
 
   @override
-  (CubicSegment, CubicSegment) splitAtInterval(double t) {
-    // TODO
-    throw UnimplementedError();
+  (CubicSegment, CubicSegment) bifurcateAtInterval(double t) {
+    final path1c1 = LineSegment(p1, c1).lerp(t);
+    final a = LineSegment(c1, c2).lerp(t);
+    final path2c2 = LineSegment(c2, p2).lerp(t);
+    final path1c2 = LineSegment(path1c1, a).lerp(t);
+    final path2c1 = LineSegment(a, path2c2).lerp(t);
+    final path1p2 = LineSegment(path1c2, path2c1).lerp(t);
+    return (
+      CubicSegment(p1: p1, p2: path1p2, c1: path1c1, c2: path1c2),
+      CubicSegment(p1: path1p2, p2: p2, c1: path2c1, c2: path2c2)
+    );
   }
 }
 
