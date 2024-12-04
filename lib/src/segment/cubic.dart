@@ -3,12 +3,12 @@ import 'segment.dart';
 ///
 class CubicSegment extends Segment {
   @override
-  P p1;
+  final P p1;
   @override
-  P p2;
+  final P p2;
 
-  P c1;
-  P c2;
+  final P c1;
+  final P c2;
 
   CubicSegment(
       {required this.p1, required this.p2, required this.c1, required this.c2});
@@ -45,6 +45,20 @@ class CubicSegment extends Segment {
       CubicSegment(p1: path1p2, p2: p2, c1: path2c1, c2: path2c2)
     );
   }
+
+  @override
+  CubicSegment reversed() => CubicSegment(p1: p2, p2: p1, c1: c2, c2: c1);
+
+  @override
+  bool operator ==(Object other) =>
+      other is CubicSegment &&
+      other.p1 == p1 &&
+      other.p2 == p2 &&
+      other.c1 == c1 &&
+      other.c2 == c2;
+
+  @override
+  int get hashCode => Object.hash(p1, p2, c1, c2);
 }
 
 double _cubicBezierLength(P a0, P a1, P a2, P a3, double tolerance, int level) {

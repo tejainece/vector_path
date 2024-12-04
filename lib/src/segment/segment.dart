@@ -20,11 +20,7 @@ abstract class Segment {
 
   P get p1;
 
-  set p1(P value);
-
   P get p2;
-
-  set p2(P value);
 
   LineSegment get p1Tangent;
 
@@ -37,6 +33,10 @@ abstract class Segment {
   P lerp(double t);
 
   double ilerp(P point);
+
+  // TODO is point on curve?
+
+  Segment reversed();
 
   (Segment, Segment) bifurcateAtInterval(double t);
 

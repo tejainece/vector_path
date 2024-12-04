@@ -25,9 +25,9 @@ abstract mixin class ILine {
 
 class LineSegment extends Segment with ILine {
   @override
-  P p1;
+  final P p1;
   @override
-  P p2;
+  final P p2;
 
   LineSegment(this.p1, this.p2);
 
@@ -58,10 +58,6 @@ class LineSegment extends Segment with ILine {
 
   Radian angleTo(LineSegment other) => angle - other.angle;
 
-  @override
-  bool operator ==(other) =>
-      other is LineSegment && other.p1.isEqual(p1) && other.p2.isEqual(p2);
-
   P pointAt(double x) => P(x, slope * x + yIntercept);
 
   double get yIntercept => p1.y - slope * p1.x;
@@ -82,6 +78,33 @@ class LineSegment extends Segment with ILine {
 
   @override
   double get length => p1.distanceTo(p2);
+
+  P pointAtDistanceFromP1(double distance) => lerp(distance/length);
+
+  P pointAtDistanceFromP2(double distance) => lerp(1 - distance/length);
+
+  P pointAtDistanceFrom(P p, double distance) {
+    if (!hasPoint(p)) {
+      throw Exception('Point $p is not on the line');
+    }
+    final dist1 = p1.distanceTo(p);
+    final dist2 = p2.distanceTo(p);
+    if (dist1 >= dist2) {
+      return LineSegment(p, p1).lerp(distance / dist1);
+    }
+    return LineSegment(p, p2).lerp(distance / dist2);
+  }
+
+  bool hasPoint(P p, {double epsilon = 1e-3}) =>
+      ((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)).abs() <
+      epsilon;
+
+  @override
+  LineSegment reversed() => LineSegment(p2, p1);
+
+  @override
+  bool operator ==(other) =>
+      other is LineSegment && other.p1.isEqual(p1) && other.p2.isEqual(p2);
 
   @override
   int get hashCode => Object.hash(p1, p2);

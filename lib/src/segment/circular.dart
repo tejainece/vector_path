@@ -2,13 +2,13 @@ import 'segment.dart';
 
 class CircularArcSegment extends Segment {
   @override
-  P p1;
+  final P p1;
   @override
-  P p2;
+  final P p2;
 
-  double radius;
-  bool largeArc;
-  bool clockwise;
+  final double radius;
+  final bool largeArc;
+  final bool clockwise;
 
   CircularArcSegment(this.p1, this.p2, this.radius,
       {this.largeArc = false, this.clockwise = true});
@@ -36,6 +36,8 @@ class CircularArcSegment extends Segment {
     throw UnimplementedError();
   }
 
+  // TODO tangent at
+
   @override
   P lerp(double t) {
     // TODO
@@ -53,4 +55,21 @@ class CircularArcSegment extends Segment {
     // TODO
     throw UnimplementedError();
   }
+
+  @override
+  CircularArcSegment reversed() {
+    throw UnimplementedError();
+  }
+
+  @override
+  bool operator ==(other) =>
+      other is CircularArcSegment &&
+      other.p1 == p1 &&
+      other.p2 == p2 &&
+      other.radius == radius &&
+      other.largeArc == largeArc &&
+      other.clockwise == clockwise;
+
+  @override
+  int get hashCode => Object.hash(p1, p2, radius, largeArc, clockwise);
 }

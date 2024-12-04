@@ -2,11 +2,11 @@ import 'segment.dart';
 
 class QuadraticSegment extends Segment {
   @override
-  P p1;
+  final P p1;
   @override
-  P p2;
+  final P p2;
 
-  P c;
+  final P c;
 
   QuadraticSegment({required this.p1, required this.p2, required this.c});
 
@@ -45,6 +45,19 @@ class QuadraticSegment extends Segment {
       p2: p2,
       c1: p1 * (1 / 3.0) + c * (2 / 3.0),
       c2: c * (2 / 3.0) + p2 * (1 / 3.0));
+
+  @override
+  QuadraticSegment reversed() => QuadraticSegment(p2: p1, p1: p2, c: c);
+
+  @override
+  bool operator ==(Object other) =>
+      other is QuadraticSegment &&
+      other.p1 == p1 &&
+      other.p2 == p2 &&
+      other.c == c;
+
+  @override
+  int get hashCode => Object.hash(p1, p2, c);
 }
 
 double _quadraticBezierLength(P a0, P a1, P a2, double tolerance, int level) {

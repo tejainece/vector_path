@@ -1,7 +1,7 @@
 import 'package:vector_path/src/mapper/mapper.dart';
 import 'package:vector_path/src/segment/segment.dart';
 
-SegmentMapper cardinalSmoother({double tension = 2}) {
+SegmentMapperWithControls cardinalSmoother({double tension = 2}) {
   return (P c1, Segment segment, P c2) {
     final p1Prime = (segment.p2 - c1) / tension;
     final p2Prime = (c2 - segment.p1) / tension;
