@@ -9,6 +9,9 @@ typedef P = Point<double>;
 
 const origin = P(0, 0);
 
+P pointOnCircle(double angle, [double radius = 1, P center = origin]) =>
+    center + P(radius * cos(angle), radius * sin(angle));
+
 extension PointExt on P {
   Point<double> operator /(double other) => Point(x / other, y / other);
 

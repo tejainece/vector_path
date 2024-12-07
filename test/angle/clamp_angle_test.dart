@@ -139,7 +139,7 @@ class _FixRadianCase {
 }
 
 void main() {
-  group('Angle', () {
+  group('angle', () {
     test('clampAngle.2pi', () {
       for (final test in _FixRadianCase.simple_2pi) {
         expect(test.inpAngle.clampAngle(), closeTo(test.outAngle, 1e-3),

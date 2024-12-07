@@ -50,6 +50,25 @@ class Clamp {
       other.width.equals(other.width) &&
       other.center0 == center0;
 
+  bool areValuesEqual(double a, double b, [double epsilon = 1e-3]) {
+    a = clamp(a);
+    b = clamp(b);
+    double diff = (a - b).abs();
+    double upper = (diff - width).abs();
+    return diff < epsilon || upper < epsilon;
+  }
+
+  /*bool areValuesEqual(double a, double b, [double epsilon = 1e-3]) {
+    a = clamp(a);
+    b = clamp(b);
+    double diff = (a - b).abs();
+    if(diff < epsilon) return true;
+    diff = (a - min) + (max - b);
+    if(diff < epsilon) return true;
+    diff = (a - max) + (min - b);
+    return diff < epsilon;
+  }*/
+
   @override
   int get hashCode => Object.hash(width, center0);
 
@@ -79,12 +98,19 @@ sealed class Angle {
 
   Angle operator -(/* Angle | num */ other);
 
+  bool operator <(Angle other);
+
+  bool operator >(Angle other);
+
   double get slope;
 
-  Angle acuteDifference(Angle other);
+  Angle get leastCoterminal;
 
-  bool equals(Angle other, [double epsilon = 1e-3]) =>
-      acuteDifference(other).value.equals(0, epsilon);
+  bool isEqualLeastCoterminals(Angle other, [double epsilon = 1e-3]);
+
+  bool equals(Angle other, [double epsilon = 1e-3]);
+
+  bool isParallelTo(Angle other, [double epsilon = 1e-3]);
 }
 
 class Radian extends Angle {
@@ -131,16 +157,69 @@ class Radian extends Angle {
   }
 
   @override
-  Radian acuteDifference(Angle other) {
+  bool operator <(Angle other) {
     other = other.toRadian;
     if (clamp != other.clamp) {
       other = other.withClamp(clamp);
     }
+    return value < other.value;
+  }
 
-    final diff1 = (value - other.value).abs();
-    final diff2 = clamp.max - value + other.value - clamp.min;
+  bool operator <=(Angle other) {
+    other = other.toRadian;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return value <= other.value;
+  }
 
-    return Radian(min(diff1, diff2), clamp: clamp);
+  @override
+  bool operator >(Angle other) {
+    other = other.toRadian;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return value > other.value;
+  }
+
+  bool operator >=(Angle other) {
+    other = other.toRadian;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return value >= other.value;
+  }
+
+  @override
+  Radian get leastCoterminal =>
+      Radian(min(value, clamp.max - value), clamp: clamp);
+
+  @override
+  bool isEqualLeastCoterminals(Angle other, [double epsilon = 1e-3]) {
+    other = other.toRadian;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return leastCoterminal.equals(other.leastCoterminal, epsilon);
+  }
+
+  @override
+  bool equals(Angle other, [double epsilon = 1e-3]) {
+    other = other.toRadian;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return clamp.areValuesEqual(_value, other.value, epsilon);
+  }
+
+  @override
+  bool isParallelTo(Angle other, [double epsilon = 1e-3]) {
+    other = other.toRadian;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    final diff = this - other;
+    return diff.equals(Radian(0), epsilon) || diff.equals(Radian(pi), epsilon);
   }
 
   @override
@@ -160,18 +239,18 @@ class Radian extends Angle {
       final numerator = v * denom;
       if (!(numerator - numerator.round()).equals(0)) return _value.toString();
       if ((numerator - numerator.round()).equals(0)) {
-        return '${numerator.round()}/$denomπ';
+        return '${numerator.round()}π/$denom';
       }
-      return '$numerator/$denomπ';
+      return '$numeratorπ/$denom';
     } else {
       for (final factor in _factors) {
         final numerator = v * factor;
         if (!(numerator - numerator.round()).equals(0)) continue;
-        return '${numerator.round()}/$factorπ';
+        return '${numerator.round()}π/$factor';
       }
     }
     // TODO
-    return _value.toString();
+    return value.toString();
   }
 
   static final _factors = List.generate(9, (i) => 9 - i + 1).reversed;
@@ -221,16 +300,52 @@ class Degree extends Angle {
   }
 
   @override
-  Degree acuteDifference(Angle other) {
+  bool operator <(Angle other) {
     other = other.toDegree;
     if (clamp != other.clamp) {
       other = other.withClamp(clamp);
     }
+    return value < other.value;
+  }
 
-    final diff1 = (value - other.value).abs();
-    final diff2 = clamp.max - value + other.value - clamp.min;
+  bool operator >(Angle other) {
+    other = other.toDegree;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return value > other.value;
+  }
 
-    return Degree(min(diff1, diff2), clamp: clamp);
+  @override
+  Degree get leastCoterminal =>
+      Degree(min(value, clamp.max - value), clamp: clamp);
+
+  @override
+  bool isEqualLeastCoterminals(Angle other, [double epsilon = 1e-3]) {
+    other = other.toDegree;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return leastCoterminal.equals(other.leastCoterminal, epsilon);
+  }
+
+  @override
+  bool equals(Angle other, [double epsilon = 1e-3]) {
+    other = other.toDegree;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    return value.equals(other.value, epsilon);
+  }
+
+  @override
+  bool isParallelTo(Angle other, [double epsilon = 1e-3]) {
+    other = other.toDegree;
+    if (clamp != other.clamp) {
+      other = other.withClamp(clamp);
+    }
+    final diff = this - other;
+    return diff.equals(Degree(0), epsilon) || diff.equals(Degree(180), epsilon);
   }
 
   @override

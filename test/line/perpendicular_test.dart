@@ -46,5 +46,16 @@ void main() {
             reason: 'for line1: ${test.line1}, line2: ${test.line2}');
       }
     });
+    /*
+    test('radial.dummy', () {
+      expect(
+          LineSegment(
+                  P(0.0, 0.0), Point(-0.4480736161291702, 0.8939966636005579))
+              .isPerpendicularTo(LineSegment(Point(0.0, 0.0),
+                  Point(0.8939966636005555, 0.44807361612917496))),
+          true,
+          reason: 'isPerpendicularTo failed');
+    });
+     */
   });
 }

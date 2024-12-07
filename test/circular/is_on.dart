@@ -1,0 +1,47 @@
+import 'package:test/test.dart';
+import 'package:vector_path/vector_path.dart';
+
+class _IsOnCircularArcCase {
+  final CircularArcSegment arc;
+  final P point;
+  final bool isOnArc;
+  final bool isOnCircle;
+
+  const _IsOnCircularArcCase(
+      this.arc, this.point, this.isOnArc, this.isOnCircle);
+
+  static List<_IsOnCircularArcCase> cases = [
+    _IsOnCircularArcCase(
+        CircularArcSegment(pointOnCircle(0.2), pointOnCircle(0.5), 1,
+            clockwise: false),
+        pointOnCircle(0.3),
+        true,
+        true),
+    _IsOnCircularArcCase(
+        CircularArcSegment(pointOnCircle(0.2), pointOnCircle(0.5), 1,
+            clockwise: false),
+        pointOnCircle(0.6),
+        false,
+        true),
+    _IsOnCircularArcCase(
+        CircularArcSegment(pointOnCircle(0.2), pointOnCircle(0.5), 1,
+            clockwise: false),
+        pointOnCircle(0.1),
+        false,
+        true),
+  ];
+}
+
+void main() {
+  group('CircularArc', () {
+    test('isOn', () {
+      for (int i = 0; i < _IsOnCircularArcCase.cases.length; i++) {
+        final test = _IsOnCircularArcCase.cases[i];
+        expect(test.arc.isOn(test.point), test.isOnArc,
+            reason: 'test $i; isOn?');
+        expect(test.arc.isOnCircle(test.point), test.isOnCircle,
+            reason: 'test $i; isOnCircle?');
+      }
+    });
+  });
+}

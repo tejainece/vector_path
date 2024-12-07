@@ -18,8 +18,7 @@ abstract mixin class ILine {
 
   bool isPerpendicularTo(ILine other, [double epsilon = 1e-3]) {
     final diff = angle - other.angle;
-    return diff.equals(Radian(pi / 2), epsilon) ||
-        diff.equals(Radian(3 * pi / 2), epsilon);
+    return diff.isParallelTo(Radian(pi / 2), epsilon);
   }
 }
 
@@ -35,8 +34,7 @@ class LineSegment extends Segment with ILine {
 
   factory LineSegment.radial(double angle,
       [double radius = 1, P center = origin]) {
-    return LineSegment(
-        center, center + P(radius * cos(angle), radius * sin(angle)));
+    return LineSegment(center, pointOnCircle(angle, radius, center));
   }
 
   @override
@@ -49,7 +47,7 @@ class LineSegment extends Segment with ILine {
   double get slope => (p2.y - p1.y) / (p2.x - p1.x);
 
   @override
-  Radian get angle => Radian(atan2(slope, 1));
+  Radian get angle => Radian(atan2(p2.y - p1.y, p2.x - p1.x));
 
   P get midpoint => (p1 + p2) / 2;
 
@@ -79,9 +77,9 @@ class LineSegment extends Segment with ILine {
   @override
   double get length => p1.distanceTo(p2);
 
-  P pointAtDistanceFromP1(double distance) => lerp(distance/length);
+  P pointAtDistanceFromP1(double distance) => lerp(distance / length);
 
-  P pointAtDistanceFromP2(double distance) => lerp(1 - distance/length);
+  P pointAtDistanceFromP2(double distance) => lerp(1 - distance / length);
 
   P pointAtDistanceFrom(P p, double distance) {
     if (!hasPoint(p)) {
@@ -105,6 +103,20 @@ class LineSegment extends Segment with ILine {
   @override
   bool operator ==(other) =>
       other is LineSegment && other.p1.isEqual(p1) && other.p2.isEqual(p2);
+
+  LineSegment normalAt(P point, {double? length, bool cw = true}) {
+    final angle = this.angle + Radian(cw ? 3 * pi / 2 : pi / 2);
+    return LineSegment.radial(angle.value, length ?? 1, point);
+  }
+
+  LineSegment normalAtP1({double? length, bool cw = true}) =>
+      normalAt(p1, length: length, cw: cw);
+
+  LineSegment normalAtP2({double? length, bool cw = true}) =>
+      normalAt(p2, length: length, cw: cw);
+
+  LineSegment bisector({double? length, bool cw = true}) =>
+      normalAt(midpoint, length: length, cw: cw);
 
   @override
   int get hashCode => Object.hash(p1, p2);
