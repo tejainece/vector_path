@@ -105,7 +105,7 @@ class LineSegment extends Segment with ILine {
       other is LineSegment && other.p1.isEqual(p1) && other.p2.isEqual(p2);
 
   LineSegment normalAt(P point, {double? length, bool cw = true}) {
-    final angle = this.angle + Radian(cw ? 3 * pi / 2 : pi / 2);
+    final angle = this.angle + Radian(cw ? pi / 2: 3 * pi / 2);
     return LineSegment.radial(angle.value, length ?? 1, point);
   }
 

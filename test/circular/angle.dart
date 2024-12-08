@@ -6,8 +6,6 @@ import 'package:vector_path/vector_path.dart';
 class _CircularArcAngleCase {
   final Radian startAngle, endAngle, angle;
 
-  // final bool clockwise;
-
   const _CircularArcAngleCase(this.startAngle, this.endAngle, this.angle);
 
   static List<_CircularArcAngleCase> cases = [

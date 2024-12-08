@@ -39,24 +39,40 @@ class CircularArcSegment extends Segment {
 
   @override
   P lerp(double t) {
-    final angle = this.angle.value * t;
-    return pointOnCircle(angle, radius, p1);
+    Radian angle;
+    if (clockwise) {
+      angle = startAngle + this.angle.value * t;
+    } else {
+      angle = endAngle + this.angle.value * t;
+    }
+    return pointOnCircle(angle.value, radius, center);
   }
 
   @override
   double ilerp(P point) {
     final ang = angleOfPoint(point);
-    return (ang.value - startAngle.value) / angle.value;
+
+    double ret;
+    if (clockwise) {
+      ret = (ang - startAngle).value / angle.value;
+    } else {
+      ret = (ang - endAngle).value / angle.value;
+    }
+    return ret;
   }
 
   @override
   (CircularArcSegment, CircularArcSegment) bifurcateAtInterval(double t) {
     final p = lerp(t);
+    final arc1LargeArc = angle.value * t > pi;
+    final arc2LargeArc = angle.value * (1 - t) > pi;
     return (
       CircularArcSegment(p1, p, radius,
-          largeArc: largeArc, clockwise: clockwise),
+          largeArc: clockwise ? arc1LargeArc : arc2LargeArc,
+          clockwise: clockwise),
       CircularArcSegment(p, p2, radius,
-          largeArc: largeArc, clockwise: clockwise)
+          largeArc: clockwise ? arc2LargeArc : arc1LargeArc,
+          clockwise: clockwise)
     );
   }
 
@@ -76,7 +92,9 @@ class CircularArcSegment extends Segment {
   Radian get angle {
     final opp = line.length / 2;
     final hypotenuse = radius;
-    return Radian(asin(opp / hypotenuse) * 2);
+    double angle = asin(opp / hypotenuse) * 2;
+    if (!largeArc) return Radian(angle);
+    return Radian(2 * pi - angle);
   }
 
   Radian angleOfPoint(P point) => LineSegment(center, point).angle;
