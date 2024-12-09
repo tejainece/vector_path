@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'segment.dart';
 
 class ArcSegment extends Segment {
@@ -57,7 +59,10 @@ class ArcSegment extends Segment {
     throw UnimplementedError();
   }
 
+  late final LineSegment chord = LineSegment(p1, p2);
+
   double get center {
+    final mid = chord.midpoint;
     // TODO
     throw UnimplementedError();
   }
@@ -65,13 +70,24 @@ class ArcSegment extends Segment {
   @override
   bool operator ==(other) =>
       other is ArcSegment &&
-          other.p1 == p1 &&
-          other.p2 == p2 &&
-          other.radius == radius &&
-          other.largeArc == largeArc &&
-          other.clockwise == clockwise &&
-          other.rotation == rotation;
+      other.p1 == p1 &&
+      other.p2 == p2 &&
+      other.radius == radius &&
+      other.largeArc == largeArc &&
+      other.clockwise == clockwise &&
+      other.rotation == rotation;
 
   @override
-  int get hashCode => Object.hash(p1, p2, radius, rotation, largeArc, clockwise);
+  int get hashCode =>
+      Object.hash(p1, p2, radius, rotation, largeArc, clockwise);
+}
+
+class Ellipse {
+  final P center;
+
+  final P radii;
+
+  final double rotation;
+
+  Ellipse(this.radii, {this.center = const P(0, 0), this.rotation = 0});
 }

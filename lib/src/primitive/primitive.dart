@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:vector_path/src/primitive/angle.dart';
 import 'package:vector_path/src/segment/line.dart';
 
+export 'affine2d.dart';
 export 'angle.dart';
 
 typedef P = Point<double>;
