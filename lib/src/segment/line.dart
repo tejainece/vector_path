@@ -95,7 +95,7 @@ class LineSegment extends Segment with ILine {
 
   bool hasPoint(P p, {double epsilon = 1e-3}) =>
       ((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)).abs() <
-      epsilon;
+          epsilon;
 
   @override
   LineSegment reversed() => LineSegment(p2, p1);
@@ -105,7 +105,7 @@ class LineSegment extends Segment with ILine {
       other is LineSegment && other.p1.isEqual(p1) && other.p2.isEqual(p2);
 
   LineSegment normalAt(P point, {double? length, bool cw = true}) {
-    final angle = this.angle + Radian(cw ? pi / 2: 3 * pi / 2);
+    final angle = this.angle + Radian(cw ? pi / 2 : 3 * pi / 2);
     return LineSegment.radial(angle.value, length ?? 1, point);
   }
 
@@ -117,6 +117,9 @@ class LineSegment extends Segment with ILine {
 
   LineSegment bisector({double? length, bool cw = true}) =>
       normalAt(midpoint, length: length, cw: cw);
+
+  LineSegment transform(Affine2d affine) =>
+      LineSegment(affine.apply(p1), affine.apply(p2));
 
   @override
   int get hashCode => Object.hash(p1, p2);

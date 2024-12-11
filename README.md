@@ -7,3 +7,7 @@
 5. [ ] Path simplification
 6. [ ] Path flattening
 7. [ ] Point on curve
+
+## Affine transformations
+
+1. [ ] Inverse

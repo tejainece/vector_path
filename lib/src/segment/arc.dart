@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'segment.dart';
 
 class ArcSegment extends Segment {
@@ -50,7 +48,8 @@ class ArcSegment extends Segment {
 
   @override
   ArcSegment reversed() {
-    throw UnimplementedError();
+    return ArcSegment(p2, p1, radius,
+        largeArc: largeArc, clockwise: !clockwise);
   }
 
   @override
@@ -80,14 +79,4 @@ class ArcSegment extends Segment {
   @override
   int get hashCode =>
       Object.hash(p1, p2, radius, rotation, largeArc, clockwise);
-}
-
-class Ellipse {
-  final P center;
-
-  final P radii;
-
-  final double rotation;
-
-  Ellipse(this.radii, {this.center = const P(0, 0), this.rotation = 0});
 }

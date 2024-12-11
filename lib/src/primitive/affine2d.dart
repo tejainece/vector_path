@@ -1,8 +1,11 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:vector_path/src/primitive/primitive.dart';
 
-/// [ scaleX
+/// [ scaleX shearX translateX ]
+/// [ shearY scaleY translateY ]
+/// [    0     0        1      ]
 class Affine2d {
   final double scaleX, shearY, shearX, scaleY, translateX, translateY;
 
@@ -51,16 +54,38 @@ class Affine2d {
       translateY: translateY);
 
   Affine2d invert() {
-    // TODO
     throw UnimplementedError();
+    // TODO
+    return Affine2d(
+        // TODO
+        );
   }
 
   /// Applies the affine transformation to the [point].
-  P apply(P point) => point.affine(this);
+  P apply(P point) => point.transform(this);
+
+  Float64List get matrix => Float64List.fromList([
+        scaleX, shearX, translateX, // row1
+        shearY, scaleY, translateY, // row2
+        0, 0, 1, // row3
+      ]);
+
+  Float64List get matrixColMajor => Float64List.fromList([
+        scaleX, shearY, 0, // row1
+        shearX, scaleY, 0, // row2
+        translateX, translateY, 1, // row3
+      ]);
+
+  Float64List get matrix4d => Float64List.fromList([
+        scaleX, shearX, translateX, 0, // row1
+        shearY, scaleY, translateY, 0, // row2
+        0, 0, 1, 0, // row3
+        0, 0, 0, 1, // row4
+      ]);
 }
 
 extension PointAffineExt on P {
-  P affine(Affine2d affine) => P(
+  P transform(Affine2d affine) => P(
       affine.scaleX * x + affine.shearX * y + affine.translateX,
       affine.shearY * x + affine.scaleY * y + affine.translateY);
 }
