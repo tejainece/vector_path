@@ -12,9 +12,13 @@ class Ellipse {
   Ellipse(this.radii, {this.center = const P(0, 0), this.rotation = 0});
 
   /// Returns the affine transformation that maps the unit circle to this ellipse
-  Affine2d get unitCircleTransform => Affine2d(scaleX: radii.x, scaleY: radii.y)
+  Affine2d get unitCircleTransform =>
+      Affine2d.rotator(rotation).scale(radii.x, radii.y).translate(
+          center.x, center.y);
+
+  /*Affine2d get unitCircleTransform => Affine2d(scaleX: radii.x, scaleY: radii.y)
       .rotate(rotation)
-      .translate(center.x, center.y);
+      .translate(center.x, center.y);*/
 
   /// Returns the affine transformation that maps this ellipse to the unit circle
   Affine2d get inverseUnitCircleTransform =>

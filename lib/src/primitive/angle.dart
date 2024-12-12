@@ -308,6 +308,7 @@ class Degree extends Angle {
     return value < other.value;
   }
 
+  @override
   bool operator >(Angle other) {
     other = other.toDegree;
     if (clamp != other.clamp) {

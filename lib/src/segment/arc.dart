@@ -49,7 +49,7 @@ class ArcSegment extends Segment {
   @override
   ArcSegment reversed() {
     return ArcSegment(p2, p1, radius,
-        largeArc: largeArc, clockwise: !clockwise);
+        largeArc: largeArc, clockwise: !clockwise, rotation: rotation);
   }
 
   @override

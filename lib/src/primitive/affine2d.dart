@@ -31,9 +31,9 @@ class Affine2d {
 
   Affine2d scale(double sx, double sy) => Affine2d(
       scaleX: scaleX * sx,
-      shearX: shearX * sx,
+      shearX: shearX * sy,
       scaleY: scaleY * sy,
-      shearY: shearY * sy,
+      shearY: shearY * sx,
       translateX: translateX,
       translateY: translateY);
 
