@@ -1,4 +1,6 @@
-import 'segment.dart';
+import 'dart:math';
+
+import 'package:vector_path/vector_path.dart';
 
 class ArcSegment extends Segment {
   @override
@@ -6,13 +8,16 @@ class ArcSegment extends Segment {
   @override
   final P p2;
 
-  final P radius;
+  final P radii;
   final double rotation;
   final bool largeArc;
   final bool clockwise;
 
-  ArcSegment(this.p1, this.p2, this.radius,
+  ArcSegment(this.p1, this.p2, this.radii,
       {this.largeArc = false, this.clockwise = true, this.rotation = 0});
+
+  late final Ellipse ellipse = Ellipse.fromSvgParameters(p1, p2, radii,
+      rotation: rotation, clockwise: clockwise, largeArc: largeArc);
 
   @override
   LineSegment get p1Tangent {
@@ -48,7 +53,7 @@ class ArcSegment extends Segment {
 
   @override
   ArcSegment reversed() {
-    return ArcSegment(p2, p1, radius,
+    return ArcSegment(p2, p1, radii,
         largeArc: largeArc, clockwise: !clockwise, rotation: rotation);
   }
 
@@ -60,23 +65,18 @@ class ArcSegment extends Segment {
 
   late final LineSegment chord = LineSegment(p1, p2);
 
-  double get center {
-    final mid = chord.midpoint;
-    // TODO
-    throw UnimplementedError();
-  }
+  P get center => ellipse.center;
 
   @override
   bool operator ==(other) =>
       other is ArcSegment &&
       other.p1 == p1 &&
       other.p2 == p2 &&
-      other.radius == radius &&
+      other.radii == radii &&
       other.largeArc == largeArc &&
       other.clockwise == clockwise &&
       other.rotation == rotation;
 
   @override
-  int get hashCode =>
-      Object.hash(p1, p2, radius, rotation, largeArc, clockwise);
+  int get hashCode => Object.hash(p1, p2, radii, rotation, largeArc, clockwise);
 }

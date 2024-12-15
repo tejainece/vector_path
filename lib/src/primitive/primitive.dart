@@ -25,4 +25,6 @@ extension PointExt on P {
   LineSegment lineTo(P other) => LineSegment(this, other);
 
   LineSegment lineFrom(P other) => LineSegment(other, this);
+
+  Radian get angle => Radian(atan2(y, x));
 }
