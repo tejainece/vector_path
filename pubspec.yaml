@@ -7,9 +7,10 @@ environment:
   sdk: ^3.6.0-334.4.beta
 
 dependencies:
-  vector_math: ^2.1.4
   fraction: ^5.0.3
 
 dev_dependencies:
   lints: ^5.0.0
   test: ^1.24.0
+  vector_math: ^2.1.4
+  calculess: ^1.0.2

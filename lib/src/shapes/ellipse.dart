@@ -94,8 +94,77 @@ class Ellipse {
     return (diff * diff) / (sum * sum);
   }();
 
-  double get perimeter =>
+  double get perimeterApprox =>
       pi * (radii.x + radii.y) * (1 + 3 * h / (10 + sqrt(4 - 3 * h)));
 
+  double get perimeter {
+    final t = atan(b * tan(pi / 2) / a);
+    return 4 * a * integralRiemannSums(0, t, _ellipticIntegrand(m), 100);
+  }
+
+  double arcLengthAtAngle(double radians) {
+    radians = Radian(radians).value;
+    int n = radians ~/ (pi / 2);
+    double remainder = radians - n * (pi / 2);
+
+    double ret = 0;
+    double? quart;
+    if (n != 0) {
+      double t = atan(b * tan(pi / 2) / a);
+      quart = a * integralRiemannSums(0, t, _ellipticIntegrand(m), t * a * 20);
+      ret = n * quart;
+    }
+    if (n.isOdd) {
+      remainder = (pi / 2) - remainder;
+    }
+
+    double t = atan(b * tan(remainder) / a);
+    final tmp =
+        a * integralRiemannSums(0, t, _ellipticIntegrand(m), t * a * 20);
+    print('$t $remainder $m $tmp');
+    if (n.isOdd) {
+      if (quart == null) {
+        double t = atan(b * tan(pi / 2) / a);
+        quart =
+            a * integralRiemannSums(0, t, _ellipticIntegrand(m), t * a * 20);
+      }
+      ret += (quart - tmp);
+    } else {
+      ret += tmp;
+    }
+    return ret;
+  }
+
+  double get m => 1 - (b * b) / (a * a);
+
   double get area => pi * a * b;
+
+  ArcSegment arc(Radian start, Radian end) {
+    final largeArc = (arcLengthAtAngle(start.value) - arcLengthAtAngle(end.value)).abs() >
+        perimeter / 2;
+    return ArcSegment(pointAtAngle(start.value), pointAtAngle(end.value), radii,
+        rotation: rotation, largeArc: largeArc, clockwise: end < start);
+  }
+
+  static double ellepticE(double t, double m) {
+    return integralRiemannSums(0, t, _ellipticIntegrand(m), 100);
+  }
+
+  static double Function(num t) _ellipticIntegrand(double m) {
+    return (t) => sqrt(1 - pow(sin(t), 2) * m);
+  }
+}
+
+typedef UnivariateIntegrand = double Function(num t);
+
+double integralRiemannSums(num min, num max, UnivariateIntegrand func, num n) {
+  double sum = 0;
+  var dx = (max - min) / n;
+  var currentX = min + dx / 2;
+  for (var i = 0; i < n; i++) {
+    var currentY = func(currentX);
+    sum += dx * currentY;
+    currentX += dx;
+  }
+  return sum;
 }

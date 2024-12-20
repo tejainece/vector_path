@@ -7,7 +7,6 @@ class CircularArcSegment extends Segment {
   final P p1;
   @override
   final P p2;
-
   final double radius;
   final bool largeArc;
   final bool clockwise;
@@ -118,4 +117,7 @@ class CircularArcSegment extends Segment {
 
   @override
   int get hashCode => Object.hash(p1, p2, radius, largeArc, clockwise);
+
+  String get svgSolo =>
+      'M ${p1.x} ${p1.y} A $radius $radius 0 ${largeArc ? 1 : 0} ${clockwise ? 0 : 1} ${p2.x} ${p2.y}';
 }

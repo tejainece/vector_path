@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:test/test.dart';
 import 'package:vector_path/vector_path.dart';
@@ -41,6 +40,7 @@ class _FixRadianCase {
         _FixRadianCase(14 * pi / 4, -2 * pi / 4), // 630
       ];
 
+  // ignore: non_constant_identifier_names
   static List<_FixRadianCase> get center0_pi => [
         _FixRadianCase(-14 * pi / 4, 2 * pi / 4), // -630
         _FixRadianCase(-13 * pi / 4, -1 * pi / 4), // -585
@@ -105,6 +105,7 @@ class _FixRadianCase {
         _FixRadianCase(14 * pi / 4, 6 * pi / 4),
       ];
 
+  // ignore: non_constant_identifier_names
   static List<_FixRadianCase> get simple_pi => [
         _FixRadianCase(-14 * pi / 4, 2 * pi / 4),
         _FixRadianCase(-13 * pi / 4, 3 * pi / 4),
