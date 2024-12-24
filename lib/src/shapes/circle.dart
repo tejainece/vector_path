@@ -33,4 +33,14 @@ class Circle {
   late final double area = pi * radius * radius;
 
   late final double perimeter = 2 * pi * radius;
+
+  P lerp(double t) => pointAtAngle(2 * pi * t);
+
+  P lerpBetween(double t1, double t2, double t, {bool clockwise = false}) =>
+      lerp(Clamp.unit.lerp(t1, t2, t, clockwise: clockwise));
+
+  double ilerp(P point) {
+    final angle = angleOfPoint(point);
+    return angle.value / (2 * pi);
+  }
 }

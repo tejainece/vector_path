@@ -45,8 +45,15 @@ class ArcSegment extends Segment {
 
   @override
   (ArcSegment, ArcSegment) bifurcateAtInterval(double t) {
-    // TODO
-    throw UnimplementedError();
+    P mid = lerp(t);
+    bool arc1LargeArc = false; // TODO
+    bool arc2LargeArc = false; // TODO
+    return (
+      ArcSegment(p1, mid, radii,
+          rotation: rotation, clockwise: clockwise, largeArc: arc1LargeArc),
+      ArcSegment(mid, p2, radii,
+          rotation: rotation, clockwise: clockwise, largeArc: arc2LargeArc)
+    );
   }
 
   @override
@@ -56,10 +63,9 @@ class ArcSegment extends Segment {
   }
 
   @override
-  double get length {
-    // TODO
-    throw UnimplementedError();
-  }
+  double get length => ellipse.arcLengthBetweenAngles(
+      ellipse.angleOfPoint(p1), ellipse.angleOfPoint(p2),
+      clockwise: clockwise);
 
   late final LineSegment chord = LineSegment(p1, p2);
 

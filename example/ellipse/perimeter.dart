@@ -8,7 +8,7 @@ void main() {
   print(ellipse.perimeter);
   print(ellipse.perimeterApprox);
 
-  print(ellipse.arcLengthTo(pi / 6));
+  print(ellipse.arcLengthAtAngle(pi / 6));
   /*print(ellipse.arcLengthTo(pi / 3));
   print(ellipse.arcLengthTo(pi / 2));
   print(ellipse.arcLengthTo(pi / 2 + pi / 6));

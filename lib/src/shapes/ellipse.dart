@@ -73,7 +73,26 @@ class Ellipse {
     return inverseUnitCircleTransform.apply(point).angle;
   }
 
-  // TODO valueAt
+  P lerp(double t) {
+    t = Clamp.unit.clamp(t);
+    t = 4 * t * (pi / 2);
+    var ret = P(radii.x * cos(t), radii.y * sin(t));
+    return ret.transform(
+        Affine2d(translateX: center.x, translateY: center.y).rotate(rotation));
+  }
+
+  P lerpBetween(double t1, double t2, double t, {bool clockwise = false}) =>
+      lerp(Clamp.unit.lerp(t1, t2, t, clockwise: clockwise));
+
+  // TODO ilerp
+  double ilerp(P point) {
+    point = point
+        .transform(Affine2d.rotator(-rotation).translate(-center.x, -center.y));
+    // TODO angle based on quadrants
+    throw UnimplementedError();
+  }
+
+  // TODO ilerpBetween
 
   bool isEqual(Ellipse other, [double epsilon = 1e-3]) {
     if (!center.isEqual(other.center, epsilon)) return false;
@@ -84,66 +103,113 @@ class Ellipse {
     return true;
   }
 
-  late final double a = max(radii.x, radii.y);
-
-  late final double b = min(radii.x, radii.y);
-
   late final double h = () {
     final diff = radii.x - radii.y;
     final sum = radii.x + radii.y;
     return (diff * diff) / (sum * sum);
   }();
 
-  double get perimeterApprox =>
-      pi * (radii.x + radii.y) * (1 + 3 * h / (10 + sqrt(4 - 3 * h)));
-
-  double get perimeter {
-    final t = atan(b * tan(pi / 2) / a);
-    return 4 * a * integralRiemannSums(0, t, _ellipticIntegrand(m), 100);
-  }
-
-  double arcLengthAtAngle(double radians) {
+  double tAtAngle(double radians) {
     radians = Radian(radians).value;
     int n = radians ~/ (pi / 2);
     double remainder = radians - n * (pi / 2);
 
-    double ret = 0;
-    double? quart;
-    if (n != 0) {
-      double t = atan(b * tan(pi / 2) / a);
-      quart = a * integralRiemannSums(0, t, _ellipticIntegrand(m), t * a * 20);
-      ret = n * quart;
-    }
+    double ret = 1 / n;
     if (n.isOdd) {
-      remainder = (pi / 2) - remainder;
+      remainder = pi / 2 - remainder;
     }
+    ret += atan(radii.y * tan(remainder) / radii.x);
+    return ret;
+  }
 
-    double t = atan(b * tan(remainder) / a);
-    final tmp =
-        a * integralRiemannSums(0, t, _ellipticIntegrand(m), t * a * 20);
-    print('$t $remainder $m $tmp');
+  double angleAtT(double t) {
+    t = Clamp.unit.clamp(t);
+    int n = t ~/ 0.25;
+    double remainder = t - n * 0.25;
+
+    double ret = 0;
+    if (n != 0) {
+      ret = n * 2 * pi;
+    }
     if (n.isOdd) {
-      if (quart == null) {
-        double t = atan(b * tan(pi / 2) / a);
-        quart =
-            a * integralRiemannSums(0, t, _ellipticIntegrand(m), t * a * 20);
-      }
-      ret += (quart - tmp);
+      remainder = 0.25 - remainder;
+    }
+    ret += atan(radii.y * tan(remainder * pi / 2) / radii.x);
+    return ret;
+  }
+
+  late final double perimeterApprox = () {
+    return pi * (radii.x + radii.y) * (1 + 3 * h / (10 + sqrt(4 - 3 * h)));
+  }();
+
+  late final double perimeter = () {
+    final t = atan(radii.y * tan(pi / 2) / radii.x);
+    return 4 *
+        radii.x *
+        integralRiemannSums(0, t, _ellipticIntegrand(m), t * radii.x * 20);
+  }();
+
+  double arcLengthAtT(double t) {
+    t = Clamp.unit.clamp(t);
+    int n = t ~/ 0.25;
+    double remainder = t - n * 0.25;
+
+    double ret = 0;
+    if (n != 0) {
+      ret = n * perimeter;
+    }
+    if (n.isOdd) {
+      remainder = 0.25 - remainder;
+    }
+    final tmp = 4 *
+        radii.x *
+        integralRiemannSums(
+            0, remainder, _ellipticIntegrand(m), remainder * radii.x * 20);
+    if (n.isOdd) {
+      ret += perimeter - tmp;
     } else {
       ret += tmp;
     }
     return ret;
   }
 
-  double get m => 1 - (b * b) / (a * a);
+  double arcLengthBetweenT(double t1, double t2, {bool clockwise = false}) {
+    final startLen = arcLengthAtT(t1);
+    final endLen = arcLengthAtT(t2);
+    if (clockwise) {
+      if (endLen > startLen) {
+        return endLen - startLen;
+      }
+      return perimeter - (startLen - endLen);
+    }
+    if (endLen > startLen) {
+      return endLen - startLen;
+    }
+    return perimeter - (startLen - endLen);
+  }
 
-  double get area => pi * a * b;
+  double arcLengthAtAngle(double radians) {
+    radians = Radian(radians).value;
+    final t = tAtAngle(radians);
+    return arcLengthAtT(t);
+  }
 
-  ArcSegment arc(Radian start, Radian end) {
-    final largeArc = (arcLengthAtAngle(start.value) - arcLengthAtAngle(end.value)).abs() >
+  double arcLengthBetweenAngles(Radian start, Radian end,
+      {bool clockwise = false}) {
+    return arcLengthBetweenT(tAtAngle(start.value), tAtAngle(end.value),
+        clockwise: clockwise);
+  }
+
+  double get m => 1 - (radii.y * radii.y) / (radii.x * radii.x);
+
+  double get area => pi * radii.x * radii.y;
+
+  ArcSegment arc(Radian start, Radian end, {bool? clockwise}) {
+    clockwise ??= end < start;
+    final largeArc = arcLengthBetweenAngles(start, end, clockwise: clockwise) >
         perimeter / 2;
     return ArcSegment(pointAtAngle(start.value), pointAtAngle(end.value), radii,
-        rotation: rotation, largeArc: largeArc, clockwise: end < start);
+        rotation: rotation, largeArc: largeArc, clockwise: clockwise);
   }
 
   static double ellepticE(double t, double m) {

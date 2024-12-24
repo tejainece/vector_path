@@ -58,6 +58,19 @@ class Clamp {
     return diff < epsilon || upper < epsilon;
   }
 
+  double lerp(double t1, double t2, double t, {bool clockwise = false}) {
+    if (clockwise) {
+      if (t1 < t2) {
+        return clamp(t2 + (t1 - t2) * t);
+      }
+      return t1 + (t2 - t1) * t;
+    }
+    if (t1 < t2) {
+      return t1 + (t2 - t1) * t;
+    }
+    return clamp(t1 + (t2 - t1) * t);
+  }
+
   /*bool areValuesEqual(double a, double b, [double epsilon = 1e-3]) {
     a = clamp(a);
     b = clamp(b);
@@ -71,6 +84,8 @@ class Clamp {
 
   @override
   int get hashCode => Object.hash(width, center0);
+
+  static const Clamp unit = Clamp(1);
 
   static const Clamp radian = Clamp(2 * pi);
 
