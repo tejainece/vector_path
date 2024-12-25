@@ -31,7 +31,7 @@ extension SegementIterableExt on Iterable<Segment> {
     final it1 = iterator;
     final it2 = other.iterator;
 
-    while(true) {
+    while (true) {
       if (!it1.moveNext()) return !it2.moveNext();
       if (!it2.moveNext()) return false;
 
@@ -62,9 +62,7 @@ extension SegementListExt on List<Segment> {
   }
 }
 
-extension PolyLinesExt on Iterable<LineSegment> {
-
-}
+extension PolyLinesExt on Iterable<LineSegment> {}
 
 extension PairsIterable<T> on Iterable<T> {
   Iterable<(T, T)> pairs() sync* {

@@ -1,7 +1,8 @@
 import 'package:vector_path/src/mapper/mapper.dart';
 import 'package:vector_path/src/segment/segment.dart';
 
-SegmentMapperWithControls catmullRomSmoother({int steps = 100, double tension = 0.5}) {
+SegmentMapperWithControls catmullRomSmoother(
+    {int steps = 100, double tension = 0.5}) {
   return (P cp1, Segment segment, P cp2) =>
       segment.line.catmullRomInterpolate(steps, tension, cp1, cp2);
 }

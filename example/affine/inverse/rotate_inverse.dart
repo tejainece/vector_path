@@ -1,8 +1,7 @@
-
 import 'package:vector_path/vector_path.dart';
 
 void main() {
-  final angle = pi/3;
+  final angle = pi / 3;
   final rot = Affine2d.rotator(angle);
   print(rot);
   final p = P(1, 0);

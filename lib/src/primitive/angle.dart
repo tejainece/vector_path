@@ -71,16 +71,18 @@ class Clamp {
     return clamp(t1 + (t2 - t1) * t);
   }
 
-  /*bool areValuesEqual(double a, double b, [double epsilon = 1e-3]) {
-    a = clamp(a);
-    b = clamp(b);
-    double diff = (a - b).abs();
-    if(diff < epsilon) return true;
-    diff = (a - min) + (max - b);
-    if(diff < epsilon) return true;
-    diff = (a - max) + (min - b);
-    return diff < epsilon;
-  }*/
+  double ilerp(double t1, double t2, double t, {bool clockwise = false}) {
+    if (clockwise) {
+      if (t1 < t2) {
+        return clamp(t1 - t) / clamp(t2 - t1);
+      }
+      return (t - t1) / (t2 - t1);
+    }
+    if (t1 < t2) {
+      return (t - t1) / (t2 - t1);
+    }
+    return clamp(t - t1) / clamp(t2 - t1);
+  }
 
   @override
   int get hashCode => Object.hash(width, center0);

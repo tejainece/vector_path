@@ -18,36 +18,30 @@ class ArcSegment extends Segment {
       rotation: rotation, clockwise: clockwise, largeArc: largeArc);
 
   @override
-  LineSegment get p1Tangent {
-    // TODO
-    throw UnimplementedError();
-  }
+  LineSegment get p1Tangent => ellipse.tangentAtPoint(p1);
 
   @override
-  LineSegment get p2Tangent {
-    // TODO
-    throw UnimplementedError();
-  }
+  LineSegment get p2Tangent => ellipse.tangentAtPoint(p2);
 
   // TODO tangent at
 
   @override
-  P lerp(double t) {
-    // TODO
-    throw UnimplementedError();
-  }
+  P lerp(double t) =>
+      ellipse.lerpBetweenPoints(p1, p2, t, clockwise: clockwise);
 
   @override
-  double ilerp(P point) {
-    // TODO
-    throw UnimplementedError();
-  }
+  double ilerp(P point) =>
+      ellipse.ilerpBetween(p1, p2, point, clockwise: clockwise);
 
   @override
   (ArcSegment, ArcSegment) bifurcateAtInterval(double t) {
     P mid = lerp(t);
-    bool arc1LargeArc = false; // TODO
-    bool arc2LargeArc = false; // TODO
+    bool arc1LargeArc =
+        ellipse.arcLengthBetweenPoints(p1, mid, clockwise: clockwise) >
+            ellipse.perimeter / 2;
+    bool arc2LargeArc =
+        ellipse.arcLengthBetweenPoints(mid, p2, clockwise: clockwise) >
+            ellipse.perimeter / 2;
     return (
       ArcSegment(p1, mid, radii,
           rotation: rotation, clockwise: clockwise, largeArc: arc1LargeArc),

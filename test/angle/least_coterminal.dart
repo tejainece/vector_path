@@ -41,7 +41,8 @@ void main() {
   group('angle', () {
     test('leastCoterminal', () {
       for (final test in _AcuteCase.cases) {
-        expect(test.angle.leastCoterminal.value, closeTo(test.acute.value, 1e-3),
+        expect(
+            test.angle.leastCoterminal.value, closeTo(test.acute.value, 1e-3),
             reason: 'for angle: ${test.angle.toDegree}');
       }
     });

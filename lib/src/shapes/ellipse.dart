@@ -73,41 +73,7 @@ class Ellipse {
     return inverseUnitCircleTransform.apply(point).angle;
   }
 
-  P lerp(double t) {
-    t = Clamp.unit.clamp(t);
-    t = 4 * t * (pi / 2);
-    var ret = P(radii.x * cos(t), radii.y * sin(t));
-    return ret.transform(
-        Affine2d(translateX: center.x, translateY: center.y).rotate(rotation));
-  }
-
-  P lerpBetween(double t1, double t2, double t, {bool clockwise = false}) =>
-      lerp(Clamp.unit.lerp(t1, t2, t, clockwise: clockwise));
-
-  // TODO ilerp
-  double ilerp(P point) {
-    point = point
-        .transform(Affine2d.rotator(-rotation).translate(-center.x, -center.y));
-    // TODO angle based on quadrants
-    throw UnimplementedError();
-  }
-
-  // TODO ilerpBetween
-
-  bool isEqual(Ellipse other, [double epsilon = 1e-3]) {
-    if (!center.isEqual(other.center, epsilon)) return false;
-    final a = canonicalForm();
-    final b = other.canonicalForm();
-    if (!a.radii.isEqual(b.radii, epsilon)) return false;
-    if (!a.rotation.equals(b.rotation, epsilon)) return false;
-    return true;
-  }
-
-  late final double h = () {
-    final diff = radii.x - radii.y;
-    final sum = radii.x + radii.y;
-    return (diff * diff) / (sum * sum);
-  }();
+  double tAtPoint(P point) => ilerp(point);
 
   double tAtAngle(double radians) {
     radians = Radian(radians).value;
@@ -137,6 +103,47 @@ class Ellipse {
     ret += atan(radii.y * tan(remainder * pi / 2) / radii.x);
     return ret;
   }
+
+  P lerp(double t) {
+    t = Clamp.unit.clamp(t);
+    t = 4 * t * (pi / 2);
+    var ret = P(radii.x * cos(t), radii.y * sin(t));
+    return ret.transform(
+        Affine2d(translateX: center.x, translateY: center.y).rotate(rotation));
+  }
+
+  P lerpBetweenPoints(P p1, P p2, double t, {bool clockwise = false}) =>
+      lerpBetween(ilerp(p1), ilerp(p2), t, clockwise: clockwise);
+
+  P lerpBetween(double t1, double t2, double t, {bool clockwise = false}) =>
+      lerp(Clamp.unit.lerp(t1, t2, t, clockwise: clockwise));
+
+  double ilerp(P point) {
+    final angle = angleOfPoint(point);
+    return angle.value / (2 * pi);
+  }
+
+  double ilerpBetween(P p1, P p2, P p, {bool clockwise = false}) {
+    final t1 = ilerp(p1);
+    final t2 = ilerp(p2);
+    final t = ilerp(p);
+    return Clamp.unit.ilerp(t1, t2, t, clockwise: clockwise);
+  }
+
+  bool isEqual(Ellipse other, [double epsilon = 1e-3]) {
+    if (!center.isEqual(other.center, epsilon)) return false;
+    final a = canonicalForm();
+    final b = other.canonicalForm();
+    if (!a.radii.isEqual(b.radii, epsilon)) return false;
+    if (!a.rotation.equals(b.rotation, epsilon)) return false;
+    return true;
+  }
+
+  late final double h = () {
+    final diff = radii.x - radii.y;
+    final sum = radii.x + radii.y;
+    return (diff * diff) / (sum * sum);
+  }();
 
   late final double perimeterApprox = () {
     return pi * (radii.x + radii.y) * (1 + 3 * h / (10 + sqrt(4 - 3 * h)));
@@ -200,9 +207,29 @@ class Ellipse {
         clockwise: clockwise);
   }
 
+  double arcLengthAtPoint(P point) => arcLengthAtT(ilerp(point));
+
+  double arcLengthBetweenPoints(P p1, P p2, {bool clockwise = false}) =>
+      arcLengthBetweenT(ilerp(p1), ilerp(p2), clockwise: clockwise);
+
   double get m => 1 - (radii.y * radii.y) / (radii.x * radii.x);
 
   double get area => pi * radii.x * radii.y;
+
+  LineSegment tangentAtT(double t) {
+    // TODO
+    throw UnimplementedError();
+  }
+
+  LineSegment tangentAtAngle(double radians) {
+    // TODO
+    throw UnimplementedError();
+  }
+
+  LineSegment tangentAtPoint(P point) {
+    // TODO
+    throw UnimplementedError();
+  }
 
   ArcSegment arc(Radian start, Radian end, {bool? clockwise}) {
     clockwise ??= end < start;

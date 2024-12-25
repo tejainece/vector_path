@@ -1,4 +1,3 @@
-
 import 'package:vector_path/vector_path.dart';
 
 void main() {

@@ -1,4 +1,3 @@
-
 import 'package:test/test.dart';
 import 'package:vector_path/vector_path.dart';
 
