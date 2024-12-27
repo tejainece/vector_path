@@ -37,13 +37,13 @@ class Ellipse {
   }
 
   /// Returns the affine transformation that maps the unit circle to this ellipse
-  Affine2d get unitCircleTransform =>
+  late final Affine2d unitCircleTransform =
       Affine2d(translateX: center.x, translateY: center.y)
           .rotate(rotation)
           .scale(radii.x, radii.y);
 
   /// Returns the affine transformation that maps this ellipse to the unit circle
-  Affine2d get inverseUnitCircleTransform =>
+  late final Affine2d inverseUnitCircleTransform =
       Affine2d(scaleX: 1 / radii.x, scaleY: 1 / radii.y)
           .rotate(-rotation)
           .translate(-center.x, -center.y);
@@ -70,7 +70,8 @@ class Ellipse {
 
   Radian angleOfPoint(P point) {
     final inverseUnitCircleTransform = this.inverseUnitCircleTransform;
-    return inverseUnitCircleTransform.apply(point).angle;
+    final transformedPoint = inverseUnitCircleTransform.apply(point);
+    return transformedPoint.angle;
   }
 
   double tAtPoint(P point) => ilerp(point);
@@ -112,14 +113,21 @@ class Ellipse {
         Affine2d(translateX: center.x, translateY: center.y).rotate(rotation));
   }
 
-  P lerpBetweenPoints(P p1, P p2, double t, {bool clockwise = false}) =>
-      lerpBetween(ilerp(p1), ilerp(p2), t, clockwise: clockwise);
+  P lerpBetweenPoints(P p1, P p2, double t, {bool clockwise = false}) {
+    final t1 = ilerp(p1);
+    final t2 = ilerp(p2);
+    print('t1: $t1, t2: $t2, t: $t');
+    return lerpBetween(t1, t2, t, clockwise: clockwise);
+  }
 
-  P lerpBetween(double t1, double t2, double t, {bool clockwise = false}) =>
-      lerp(Clamp.unit.lerp(t1, t2, t, clockwise: clockwise));
+  P lerpBetween(double t1, double t2, double t, {bool clockwise = false}) {
+    final forT = Clamp.unit.lerp(t1, t2, t, clockwise: clockwise);
+    return lerp(forT);
+  }
 
   double ilerp(P point) {
     final angle = angleOfPoint(point);
+    print('angle ${angle.value}');
     return angle.value / (2 * pi);
   }
 
@@ -149,12 +157,13 @@ class Ellipse {
     return pi * (radii.x + radii.y) * (1 + 3 * h / (10 + sqrt(4 - 3 * h)));
   }();
 
-  late final double perimeter = () {
+  late final double quart = () {
     final t = atan(radii.y * tan(pi / 2) / radii.x);
-    return 4 *
-        radii.x *
+    return radii.x *
         integralRiemannSums(0, t, _ellipticIntegrand(m), t * radii.x * 20);
   }();
+
+  late final double perimeter = 4 * quart;
 
   double arcLengthAtT(double t) {
     t = Clamp.unit.clamp(t);
@@ -163,17 +172,16 @@ class Ellipse {
 
     double ret = 0;
     if (n != 0) {
-      ret = n * perimeter;
+      ret = n * quart;
     }
     if (n.isOdd) {
       remainder = 0.25 - remainder;
     }
-    final tmp = 4 *
-        radii.x *
-        integralRiemannSums(
-            0, remainder, _ellipticIntegrand(m), remainder * radii.x * 20);
+    final tmp = radii.x *
+        integralRiemannSums(0, remainder * 4 * pi / 2, _ellipticIntegrand(m),
+            remainder * 4 * radii.x * 20);
     if (n.isOdd) {
-      ret += perimeter - tmp;
+      ret += quart - tmp;
     } else {
       ret += tmp;
     }
@@ -184,10 +192,10 @@ class Ellipse {
     final startLen = arcLengthAtT(t1);
     final endLen = arcLengthAtT(t2);
     if (clockwise) {
-      if (endLen > startLen) {
-        return endLen - startLen;
+      if (startLen > endLen) {
+        return startLen - endLen;
       }
-      return perimeter - (startLen - endLen);
+      return perimeter - (endLen - startLen);
     }
     if (endLen > startLen) {
       return endLen - startLen;

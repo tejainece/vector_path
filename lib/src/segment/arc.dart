@@ -15,7 +15,7 @@ class ArcSegment extends Segment {
       {this.largeArc = false, this.clockwise = true, this.rotation = 0});
 
   late final Ellipse ellipse = Ellipse.fromSvgParameters(p1, p2, radii,
-      rotation: rotation, clockwise: clockwise, largeArc: largeArc);
+      rotation: rotation, clockwise: !clockwise, largeArc: largeArc);
 
   @override
   LineSegment get p1Tangent => ellipse.tangentAtPoint(p1);

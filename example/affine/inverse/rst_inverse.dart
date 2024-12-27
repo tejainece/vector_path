@@ -21,4 +21,8 @@ void main() {
   final p1 = affTr.apply(p);
   print(p1);
   print(invTr.apply(p1));
+
+  final invTr1 = affTr.inverse();
+  print(invTr1);
+  print(affTr * invTr1);
 }

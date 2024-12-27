@@ -17,6 +17,20 @@ class Affine2d {
       this.shearY = 0,
       this.translateY = 0});
 
+  factory Affine2d.fromMatrix(Float64List m) {
+    assert(m.length == 9);
+    assert(m[6] == 0);
+    assert(m[7] == 0);
+    assert(m[8] == 1);
+    return Affine2d(
+        scaleX: m[0],
+        shearX: m[1],
+        translateX: m[2],
+        scaleY: m[3],
+        shearY: m[4],
+        translateY: m[5]);
+  }
+
   factory Affine2d.scaler(double s) => Affine2d(scaleX: s, scaleY: s);
 
   factory Affine2d.rotator(double angle) => Affine2d(
@@ -51,13 +65,29 @@ class Affine2d {
       translateX: translateX,
       translateY: translateY);
 
-  Affine2d invert() {
-    throw UnimplementedError();
-    // TODO
-    return Affine2d(
-        // TODO
-        );
-  }
+  late final double det = scaleX * scaleY - shearX * shearY;
+
+  Float64List get cofactor => Float64List.fromList([
+        scaleY, -shearY, 0, // row1
+        -shearX, scaleX, 0, // row2
+        shearX * translateY - scaleY * translateX,
+        -scaleX * translateY + shearY * translateX,
+        scaleX * scaleY - shearX * shearY,
+      ]);
+
+  Float64List get adjoint => Float64List.fromList([
+        scaleY, -shearX, shearX * translateY - scaleY * translateX, // row1
+        -shearY, scaleX, -scaleX * translateY + shearY * translateX, // row2
+        0, 0, scaleX * scaleY - shearX * shearY, // row3
+      ]);
+
+  Affine2d inverse() => Affine2d(
+      scaleX: scaleY / det,
+      shearX: -shearX / det,
+      translateX: (shearX * translateY - scaleY * translateX) / det,
+      shearY: -shearY / det,
+      scaleY: scaleX / det,
+      translateY: (-scaleX * translateY + shearY * translateX) / det);
 
   Affine2d withTranslate(double tx, double ty) {
     return Affine2d(
