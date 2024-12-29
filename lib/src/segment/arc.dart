@@ -79,5 +79,5 @@ class ArcSegment extends Segment {
   int get hashCode => Object.hash(p1, p2, radii, rotation, largeArc, clockwise);
 
   String get soloSvg =>
-      'M${p1.x},${p1.y}A${radii.x},${radii.y},${rotation},${largeArc ? 1 : 0},${clockwise ? 0 : 1},${p2.x},${p2.y}';
+      'M${p1.x},${p1.y}A${radii.x},${radii.y},$rotation,${largeArc ? 1 : 0},${clockwise ? 0 : 1},${p2.x},${p2.y}';
 }

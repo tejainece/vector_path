@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:vector_path/src/primitive/angle.dart';
+import 'package:vector_path/vector_path.dart';
 
 class _ClampTest {
   final Clamp clamp;

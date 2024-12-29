@@ -5,6 +5,7 @@ import 'package:vector_path/src/segment/line.dart';
 
 export 'affine2d.dart';
 export 'angle.dart';
+export 'clamp.dart';
 
 typedef P = Point<double>;
 
@@ -20,7 +21,7 @@ extension PointExt on P {
       x * cos(radians) - y * sin(radians), x * sin(radians) + y * cos(radians));
 
   bool isEqual(Point<double> other, [double epsilon = 1e-3]) =>
-      x.equals(x, epsilon) && y.equals(y, epsilon);
+      x.equals(other.x, epsilon) && y.equals(other.y, epsilon);
 
   LineSegment lineTo(P other) => LineSegment(this, other);
 

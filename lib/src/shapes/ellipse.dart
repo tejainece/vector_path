@@ -12,6 +12,11 @@ class Ellipse {
   factory Ellipse.fromSvgParameters(P p1, P p2, P radii,
       {double rotation = 0, bool clockwise = false, bool largeArc = false}) {
     final d = P((p1.x - p2.x) / 2, (p1.y - p2.y) / 2);
+    if (d.isEqual(P(0, 0))) {
+      // Degenerate ellipse
+      P center = P(-radii.x, 0).rotate(pi + rotation) + p1;
+      return Ellipse(radii, center: center, rotation: rotation);
+    }
     final costh = cos(rotation);
     final sinth = sin(rotation);
     final transformed =
@@ -116,7 +121,6 @@ class Ellipse {
   P lerpBetweenPoints(P p1, P p2, double t, {bool clockwise = false}) {
     final t1 = ilerp(p1);
     final t2 = ilerp(p2);
-    print('t1: $t1, t2: $t2, t: $t');
     return lerpBetween(t1, t2, t, clockwise: clockwise);
   }
 
@@ -127,7 +131,6 @@ class Ellipse {
 
   double ilerp(P point) {
     final angle = angleOfPoint(point);
-    print('angle ${angle.value}');
     return angle.value / (2 * pi);
   }
 
