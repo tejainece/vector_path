@@ -40,9 +40,9 @@ class CircularArcSegment extends Segment {
   P lerp(double t) {
     Radian angle;
     if (clockwise) {
-      angle = startAngle + this.angle.value * t;
-    } else {
       angle = endAngle + this.angle.value * t;
+    } else {
+      angle = startAngle + this.angle.value * t;
     }
     return pointOnCircle(angle.value, radius, center);
   }
@@ -66,12 +66,20 @@ class CircularArcSegment extends Segment {
     final arc1LargeArc = angle.value * t > pi;
     final arc2LargeArc = angle.value * (1 - t) > pi;
     return (
-      CircularArcSegment(p1, p, radius,
-          largeArc: clockwise ? arc1LargeArc : arc2LargeArc,
-          clockwise: clockwise),
-      CircularArcSegment(p, p2, radius,
-          largeArc: clockwise ? arc2LargeArc : arc1LargeArc,
-          clockwise: clockwise)
+      CircularArcSegment(
+        p1,
+        p,
+        radius,
+        largeArc: clockwise ? arc2LargeArc : arc1LargeArc,
+        clockwise: clockwise,
+      ),
+      CircularArcSegment(
+        p,
+        p2,
+        radius,
+        largeArc: clockwise ? arc1LargeArc : arc2LargeArc,
+        clockwise: clockwise,
+      )
     );
   }
 
@@ -82,29 +90,30 @@ class CircularArcSegment extends Segment {
   @override
   double get length => radius * angle.value;
 
-  P get center {
+  late final P center = () {
     final dist = radius * cos(angle.value / 2);
-    final bisector = line.bisector(length: dist, cw: clockwise);
-    return bisector.p2;
-  }
+    final bisector = line.bisector(length: dist, cw: !clockwise);
+    final ret = bisector.p2;
+    return ret;
+  }();
 
-  Radian get angle {
+  late final Radian angle = () {
     final opp = line.length / 2;
     final hypotenuse = radius;
     double angle = asin(opp / hypotenuse) * 2;
     if (!largeArc) return Radian(angle);
     return Radian(2 * pi - angle);
-  }
+  }();
 
   Radian angleOfPoint(P point) => LineSegment(center, point).angle;
 
-  Radian get startAngle => LineSegment(center, p1).angle;
+  late final Radian startAngle = radial1.angle;
 
-  Radian get endAngle => LineSegment(center, p2).angle;
+  late final Radian endAngle = radial2.angle;
 
-  LineSegment get radial1 => LineSegment(center, p1);
+  late final LineSegment radial1 = LineSegment(center, p1);
 
-  LineSegment get radial2 => LineSegment(center, p2);
+  late final LineSegment radial2 = LineSegment(center, p2);
 
   @override
   bool operator ==(other) =>
@@ -120,4 +129,32 @@ class CircularArcSegment extends Segment {
 
   String get svgSolo =>
       'M ${p1.x} ${p1.y} A $radius $radius 0 ${largeArc ? 1 : 0} ${clockwise ? 0 : 1} ${p2.x} ${p2.y}';
+
+  @override
+  R get boundingBox {
+    R ret = R(p1.x, p1.y, p2.x, p2.y);
+    Radian angle = startAngle;
+    const double step = pi / 2;
+    angle = Radian((angle.value ~/ step) * step);
+    if (clockwise) {
+      angle = angle + Radian(pi / 2);
+    }
+    while (true) {
+      if (clockwise) {
+        angle = angle - Radian(pi / 2);
+        final diff = Clamp.radian.subtractCW(angle.value, startAngle.value);
+        if (diff.isNegative) {
+          return ret;
+        }
+      } else {
+        angle = angle + Radian(pi / 2);
+        final diff = Clamp.radian.subtractCCW(angle.value, endAngle.value);
+        if (diff.isNegative) {
+          return ret;
+        }
+      }
+      ret = ret.includePoint(center.x + radius * cos(angle.value),
+          center.y + radius * sin(angle.value));
+    }
+  }
 }

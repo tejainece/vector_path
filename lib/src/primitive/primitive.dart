@@ -29,3 +29,10 @@ extension PointExt on P {
 
   Radian get angle => Radian(atan2(y, x));
 }
+
+typedef R = Rectangle<double>;
+
+extension RectangleExt on R {
+  R includePoint(double x, double y) => R(min(left, x), min(top, y),
+      max(right, x) - min(left, x), max(bottom, y) - min(top, y));
+}

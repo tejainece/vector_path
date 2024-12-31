@@ -18,8 +18,8 @@ class Clamp {
   @override
   bool operator ==(Object other) =>
       other is Clamp &&
-          other.width.equals(other.width) &&
-          other.center0 == center0;
+      other.width.equals(other.width) &&
+      other.center0 == center0;
 
   bool areValuesEqual(double a, double b, [double epsilon = 1e-3]) {
     a = clamp(a);
@@ -54,6 +54,22 @@ class Clamp {
       return (t - t1) / (t2 - t1);
     }
     return clamp(t - t1) / clamp(t2 - t1);
+  }
+
+  double subtractCCW(double start, double end, {double epsilon = 1e-3}) {
+    if(areValuesEqual(start, max)) start = min;
+    if(areValuesEqual(end, min)) end = max;
+    final diff = end - start;
+    if(diff.isNegative) return diff + width;
+    return diff;
+  }
+
+  double subtractCW(double start, double end, {double epsilon = 1e-3}) {
+    if(areValuesEqual(start, min)) start = max;
+    if(areValuesEqual(end, max)) end = min;
+    final diff = start - end;
+    if(diff.isNegative) return diff + width;
+    return diff;
   }
 
   @override

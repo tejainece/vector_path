@@ -80,4 +80,9 @@ class ArcSegment extends Segment {
 
   String get soloSvg =>
       'M${p1.x},${p1.y}A${radii.x},${radii.y},$rotation,${largeArc ? 1 : 0},${clockwise ? 0 : 1},${p2.x},${p2.y}';
+
+  @override
+  R get boundingBox {
+    throw UnimplementedError();
+  }
 }

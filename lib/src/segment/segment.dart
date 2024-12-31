@@ -38,6 +38,8 @@ abstract class Segment {
 
   Segment reversed();
 
+  R get boundingBox;
+
   (Segment, Segment) bifurcateAtInterval(double t);
 
   List<Segment> split([int count = 2]) {

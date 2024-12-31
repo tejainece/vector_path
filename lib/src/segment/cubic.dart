@@ -59,6 +59,11 @@ class CubicSegment extends Segment {
 
   @override
   int get hashCode => Object.hash(p1, p2, c1, c2);
+
+  @override
+  R get boundingBox {
+    throw UnimplementedError();
+  }
 }
 
 double _cubicBezierLength(P a0, P a1, P a2, P a3, double tolerance, int level) {

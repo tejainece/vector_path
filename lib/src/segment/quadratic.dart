@@ -58,6 +58,11 @@ class QuadraticSegment extends Segment {
 
   @override
   int get hashCode => Object.hash(p1, p2, c);
+
+  @override
+  R get boundingBox {
+    throw UnimplementedError();
+  }
 }
 
 double _quadraticBezierLength(P a0, P a1, P a2, double tolerance, int level) {

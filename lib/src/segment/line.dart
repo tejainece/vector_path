@@ -126,6 +126,9 @@ class LineSegment extends Segment with ILine {
 
   @override
   String toString() => 'Line($p1, $p2)';
+
+  @override
+  R get boundingBox => R.fromPoints(p1, p2);
 }
 
 class Line with ILine {
