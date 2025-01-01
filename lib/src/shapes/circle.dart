@@ -4,7 +4,7 @@ class Circle {
   final P center;
   final double radius;
 
-  Circle({this.center = const P(0, 0), this.radius = 1});
+  Circle({this.center = origin, this.radius = 1});
 
   P pointAtAngle(double angle) =>
       center + P(radius * cos(angle), radius * sin(angle));

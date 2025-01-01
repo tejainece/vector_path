@@ -7,12 +7,12 @@ class Ellipse {
 
   final double rotation;
 
-  Ellipse(this.radii, {this.center = const P(0, 0), this.rotation = 0});
+  Ellipse(this.radii, {this.center = origin, this.rotation = 0});
 
   factory Ellipse.fromSvgParameters(P p1, P p2, P radii,
       {double rotation = 0, bool clockwise = false, bool largeArc = false}) {
     final d = P((p1.x - p2.x) / 2, (p1.y - p2.y) / 2);
-    if (d.isEqual(P(0, 0))) {
+    if (d.isEqual(origin)) {
       // Degenerate ellipse
       P center = P(-radii.x, 0).rotate(pi + rotation) + p1;
       return Ellipse(radii, center: center, rotation: rotation);
@@ -253,7 +253,7 @@ class Ellipse {
   (double, double) xBounds() {
     final axis =
         P(unitCircleTransform.elementAt(0), unitCircleTransform.elementAt(1));
-    var r = axis.distanceTo(P(0, 0));
+    var r = axis.magnitude;
     var mid = unitCircleTransform.elementAt(2);
     return (
       mid - r,
@@ -265,7 +265,7 @@ class Ellipse {
       xBoundsWithAngle() {
     final axis =
         P(unitCircleTransform.elementAt(0), unitCircleTransform.elementAt(1));
-    var r = axis.distanceTo(P(0, 0));
+    var r = axis.magnitude;
     var mid = unitCircleTransform.elementAt(2);
     final angle = axis.angle;
     return (
@@ -277,7 +277,7 @@ class Ellipse {
   (double, double) yBounds() {
     final axis =
         P(unitCircleTransform.elementAt(3), unitCircleTransform.elementAt(4));
-    var r = axis.distanceTo(P(0, 0));
+    var r = axis.magnitude;
     var mid = unitCircleTransform.elementAt(5);
     return (
       mid - r,
@@ -289,7 +289,7 @@ class Ellipse {
       yBoundsWithAngle() {
     final axis =
         P(unitCircleTransform.elementAt(3), unitCircleTransform.elementAt(4));
-    var r = axis.distanceTo(P(0, 0));
+    var r = axis.magnitude;
     var mid = unitCircleTransform.elementAt(5);
     final angle = axis.angle;
     return (
