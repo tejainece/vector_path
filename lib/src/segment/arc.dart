@@ -86,6 +86,9 @@ class ArcSegment extends Segment {
   @override
   R get boundingBox {
     R ret = R.fromPoints(p1, p2);
+    if (startAngle.equals(endAngle)) {
+      return ret;
+    }
     final xBounds = ellipse.xBoundsWithAngle();
     final yBounds = ellipse.yBoundsWithAngle();
     if (clockwise) {
@@ -118,7 +121,7 @@ class ArcSegment extends Segment {
     return ret;
   }
 
-  Radian get startAngle => ellipse.angleOfPoint(p1);
+  late final Radian startAngle = ellipse.angleOfPoint(p1);
 
-  Radian get endAngle => ellipse.angleOfPoint(p2);
+  late final Radian endAngle = ellipse.angleOfPoint(p2);
 }
