@@ -1,13 +1,13 @@
 # Features
 
-1. [X] Path smoothing
-2. [ ] Curve Intersection
-3. [ ] Boolean vector operations
+1. Path smoothing
+2. Point on curve
+
+# TODO
+
+1. [ ] Curve Intersection
+2. [ ] Boolean vector operation: Union
+3. [ ] Boolean vector operation: Difference
 4. [ ] Expand/shrink
 5. [ ] Path simplification
 6. [ ] Path flattening
-7. [ ] Point on curve
-
-## Affine transformations
-
-1. [ ] Inverse

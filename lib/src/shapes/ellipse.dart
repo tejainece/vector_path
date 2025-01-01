@@ -250,6 +250,54 @@ class Ellipse {
         rotation: rotation, largeArc: largeArc, clockwise: clockwise);
   }
 
+  (double, double) xBounds() {
+    final axis =
+        P(unitCircleTransform.elementAt(0), unitCircleTransform.elementAt(1));
+    var r = axis.distanceTo(P(0, 0));
+    var mid = unitCircleTransform.elementAt(2);
+    return (
+      mid - r,
+      mid + r,
+    );
+  }
+
+  (({Radian angle, double value}), ({Radian angle, double value}))
+      xBoundsWithAngle() {
+    final axis =
+        P(unitCircleTransform.elementAt(0), unitCircleTransform.elementAt(1));
+    var r = axis.distanceTo(P(0, 0));
+    var mid = unitCircleTransform.elementAt(2);
+    final angle = axis.angle;
+    return (
+      (angle: angle, value: mid + r),
+      (angle: angle + pi, value: mid - r)
+    );
+  }
+
+  (double, double) yBounds() {
+    final axis =
+        P(unitCircleTransform.elementAt(3), unitCircleTransform.elementAt(4));
+    var r = axis.distanceTo(P(0, 0));
+    var mid = unitCircleTransform.elementAt(5);
+    return (
+      mid - r,
+      mid + r,
+    );
+  }
+
+  (({Radian angle, double value}), ({Radian angle, double value}))
+      yBoundsWithAngle() {
+    final axis =
+        P(unitCircleTransform.elementAt(3), unitCircleTransform.elementAt(4));
+    var r = axis.distanceTo(P(0, 0));
+    var mid = unitCircleTransform.elementAt(5);
+    final angle = axis.angle;
+    return (
+      (angle: angle, value: mid + r),
+      (angle: angle + pi, value: mid - r),
+    );
+  }
+
   static double ellepticE(double t, double m) {
     return integralRiemannSums(0, t, _ellipticIntegrand(m), 100);
   }

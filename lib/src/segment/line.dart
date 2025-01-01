@@ -37,6 +37,12 @@ class LineSegment extends Segment with ILine {
     return LineSegment(center, pointOnCircle(angle, radius, center));
   }
 
+  factory LineSegment.horizontal(double x1, double x2, [double y = 0]) =>
+      LineSegment(P(x1, y), P(x2, y));
+
+  factory LineSegment.vertical(double y1, double y2, [double x = 0]) =>
+      LineSegment(P(x, y1), P(x, y2));
+
   @override
   LineSegment get p1Tangent => LineSegment(p1, p2);
 

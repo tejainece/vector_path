@@ -102,11 +102,7 @@ class Affine2d {
   /// Applies the affine transformation to the [point].
   P apply(P point) => point.transform(this);
 
-  Float64List get matrix => Float64List.fromList([
-        scaleX, shearX, translateX, // row1
-        shearY, scaleY, translateY, // row2
-        0, 0, 1, // row3
-      ]);
+  Float64List get matrix => Float64List.fromList(_list);
 
   Float64List get matrixColMajor => Float64List.fromList([
         scaleX, shearY, 0, // row1
@@ -146,6 +142,14 @@ class Affine2d {
     throw UnsupportedError(
         'Type ${value.runtimeType} not supported for matrix multiplication');
   }
+
+  late final _list = <double>[
+    scaleX, shearX, translateX, // row1
+    shearY, scaleY, translateY, // row2
+    0, 0, 1, // row3
+  ];
+
+  double elementAt(int n) => _list[n];
 
   @override
   String toString() {

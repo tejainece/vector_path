@@ -132,29 +132,29 @@ class CircularArcSegment extends Segment {
 
   @override
   R get boundingBox {
-    R ret = R(p1.x, p1.y, p2.x, p2.y);
-    Radian angle = startAngle;
+    R ret = R.fromPoints(p1, p2);
     const double step = pi / 2;
-    angle = Radian((angle.value ~/ step) * step);
+    Radian angle = Radian((startAngle.value ~/ step) * step);
     if (clockwise) {
-      angle = angle + Radian(pi / 2);
+      angle = angle + step;
     }
-    while (true) {
+    for (int i = 0; i < 4; i++) {
       if (clockwise) {
-        angle = angle - Radian(pi / 2);
-        final diff = Clamp.radian.subtractCW(angle.value, startAngle.value);
-        if (diff.isNegative) {
+        angle = angle - step;
+        if (!Clamp.radian
+            .isBetweenCW(startAngle.value, endAngle.value, angle.value)) {
           return ret;
         }
       } else {
-        angle = angle + Radian(pi / 2);
-        final diff = Clamp.radian.subtractCCW(angle.value, endAngle.value);
-        if (diff.isNegative) {
+        angle = angle + step;
+        if (!Clamp.radian
+            .isBetweenCCW(startAngle.value, endAngle.value, angle.value)) {
           return ret;
         }
       }
       ret = ret.includePoint(center.x + radius * cos(angle.value),
           center.y + radius * sin(angle.value));
     }
+    return ret;
   }
 }

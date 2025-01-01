@@ -17,6 +17,8 @@ class ArcSegment extends Segment {
   late final Ellipse ellipse = Ellipse.fromSvgParameters(p1, p2, radii,
       rotation: rotation, clockwise: !clockwise, largeArc: largeArc);
 
+  Affine2d get unitCircleTransform => ellipse.unitCircleTransform;
+
   @override
   LineSegment get p1Tangent => ellipse.tangentAtPoint(p1);
 
@@ -83,6 +85,40 @@ class ArcSegment extends Segment {
 
   @override
   R get boundingBox {
-    throw UnimplementedError();
+    R ret = R.fromPoints(p1, p2);
+    final xBounds = ellipse.xBoundsWithAngle();
+    final yBounds = ellipse.yBoundsWithAngle();
+    if (clockwise) {
+      if (xBounds.$1.angle.isBetweenCW(startAngle, endAngle)) {
+        ret = ret.includeX(xBounds.$1.value);
+      }
+      if (xBounds.$2.angle.isBetweenCW(startAngle, endAngle)) {
+        ret = ret.includeX(xBounds.$2.value);
+      }
+      if (yBounds.$1.angle.isBetweenCW(startAngle, endAngle)) {
+        ret = ret.includeY(yBounds.$1.value);
+      }
+      if (yBounds.$2.angle.isBetweenCW(startAngle, endAngle)) {
+        ret = ret.includeY(yBounds.$2.value);
+      }
+    } else {
+      if (xBounds.$1.angle.isBetweenCCW(startAngle, endAngle)) {
+        ret = ret.includeX(xBounds.$1.value);
+      }
+      if (xBounds.$2.angle.isBetweenCCW(startAngle, endAngle)) {
+        ret = ret.includeX(xBounds.$2.value);
+      }
+      if (yBounds.$1.angle.isBetweenCCW(startAngle, endAngle)) {
+        ret = ret.includeY(yBounds.$1.value);
+      }
+      if (yBounds.$2.angle.isBetweenCCW(startAngle, endAngle)) {
+        ret = ret.includeY(yBounds.$2.value);
+      }
+    }
+    return ret;
   }
+
+  Radian get startAngle => ellipse.angleOfPoint(p1);
+
+  Radian get endAngle => ellipse.angleOfPoint(p2);
 }

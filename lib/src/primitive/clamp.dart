@@ -56,20 +56,30 @@ class Clamp {
     return clamp(t - t1) / clamp(t2 - t1);
   }
 
-  double subtractCCW(double start, double end, {double epsilon = 1e-3}) {
-    if(areValuesEqual(start, max)) start = min;
-    if(areValuesEqual(end, min)) end = max;
-    final diff = end - start;
-    if(diff.isNegative) return diff + width;
-    return diff;
+  bool isBetweenCCW(double start, double end, double value) {
+    start = clamp(start);
+    end = clamp(end);
+    value = clamp(value);
+    if (areValuesEqual(start, end)) {
+      return areValuesEqual(start, value);
+    }
+    if (start < end) {
+      return value >= start && value <= end;
+    }
+    return value >= start || value <= end;
   }
 
-  double subtractCW(double start, double end, {double epsilon = 1e-3}) {
-    if(areValuesEqual(start, min)) start = max;
-    if(areValuesEqual(end, max)) end = min;
-    final diff = start - end;
-    if(diff.isNegative) return diff + width;
-    return diff;
+  bool isBetweenCW(double start, double end, double value) {
+    start = clamp(start);
+    end = clamp(end);
+    value = clamp(value);
+    if (areValuesEqual(start, end)) {
+      return areValuesEqual(start, value);
+    }
+    if (start > end) {
+      return value >= end && value <= start;
+    }
+    return value >= end || value <= start;
   }
 
   @override

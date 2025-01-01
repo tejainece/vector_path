@@ -23,7 +23,7 @@ extension NumAngleExt on num {
 
   double slopeRotate(double radians) =>
       (sin(radians) + this * cos(radians)) /
-      (cos(radians) - this * sin(radians));
+          (cos(radians) - this * sin(radians));
 }
 
 extension DoubleAngleExt on double {
@@ -184,6 +184,12 @@ class Radian extends Angle {
   @override
   double get slope => tan(_value);
 
+  bool isBetweenCW(Radian start, Radian end) =>
+      clamp.isBetweenCW(_value, start.value, end.value);
+
+  bool isBetweenCCW(Radian start, Radian end) =>
+      clamp.isBetweenCCW(_value, start.value, end.value);
+
   @override
   String toString({int? denom}) {
     double v = value / pi;
@@ -205,7 +211,9 @@ class Radian extends Angle {
     return value.toString();
   }
 
-  static final _factors = List.generate(9, (i) => 9 - i + 1).reversed;
+  static final _factors = List
+      .generate(9, (i) => 9 - i + 1)
+      .reversed;
 }
 
 class Degree extends Angle {
