@@ -1,5 +1,4 @@
-import 'package:vector_path/src/mapper/mapper.dart';
-import 'package:vector_path/src/segment/segment.dart';
+import 'package:vector_path/vector_path.dart';
 
 SegmentMapperWithControls cardinalSmoother({double tension = 2}) {
   return (P c1, Segment segment, P c2) {

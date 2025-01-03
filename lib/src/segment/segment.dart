@@ -1,9 +1,5 @@
-import 'dart:math';
+import 'package:vector_path/vector_path.dart';
 
-import 'package:vector_path/src/primitive/primitive.dart';
-import 'package:vector_path/src/segment/line.dart';
-
-export '../primitive/primitive.dart';
 export 'arc.dart';
 export 'circular.dart';
 export 'cubic.dart';
@@ -11,7 +7,7 @@ export 'line.dart';
 export 'quadratic.dart';
 
 abstract class Segment {
-  static List<Segment> rect(Rectangle<double> rect) => [
+  static List<Segment> rect(R rect) => [
         LineSegment(rect.topLeft, rect.topRight),
         LineSegment(rect.topRight, rect.bottomRight),
         LineSegment(rect.bottomRight, rect.bottomLeft),

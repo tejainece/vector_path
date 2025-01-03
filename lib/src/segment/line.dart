@@ -1,6 +1,4 @@
-import 'dart:math';
-
-import 'segment.dart';
+import 'package:vector_path/vector_path.dart';
 
 abstract mixin class ILine {
   Radian get angle;
@@ -34,7 +32,7 @@ class LineSegment extends Segment with ILine {
 
   factory LineSegment.radial(double angle,
       [double radius = 1, P center = origin]) {
-    return LineSegment(center, pointOnCircle(angle, radius, center));
+    return LineSegment(center, P.onCircle(angle, radius, center));
   }
 
   factory LineSegment.horizontal(double x1, double x2, [double y = 0]) =>

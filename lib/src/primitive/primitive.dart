@@ -7,23 +7,80 @@ export 'affine2d.dart';
 export 'angle.dart';
 export 'clamp.dart';
 
-typedef P = Point<double>;
+class P {
+  final double x;
+  final double y;
 
-const origin = P(0, 0);
+  const P(this.x, this.y);
 
-P pointOnCircle(double angle, [double radius = 1, P center = origin]) =>
-    center + P(radius * cos(angle), radius * sin(angle));
+  factory P.onCircle(double angle, [double radius = 1, P center = origin]) =>
+      center + P(radius * cos(angle), radius * sin(angle));
 
-extension PointExt on P {
-  Point<double> operator /(double other) => Point(x / other, y / other);
+  P operator -() => P(-x, -y);
 
-  P rotate(double radians) =>
-      P(
-          x * cos(radians) - y * sin(radians),
-          x * sin(radians) + y * cos(radians));
+  P operator +(other) {
+    if (other is num) {
+      return P(x + other, y + other);
+    } else if (other is P) {
+      return P(x + other.x, y + other.y);
+    }
+    throw ArgumentError('Unsupported type: ${other.runtimeType}');
+  }
 
-  bool isEqual(Point<double> other, [double epsilon = 1e-3]) =>
+  P operator -(other) {
+    if (other is num) {
+      return P(x - other, y - other);
+    } else if (other is P) {
+      return P(x - other.x, y - other.y);
+    }
+    throw ArgumentError('Unsupported type: ${other.runtimeType}');
+  }
+
+  P operator *(other) {
+    if (other is num) {
+      return P(x * other, y * other);
+    } else if (other is P) {
+      return P(x * other.x, y * other.y);
+    }
+    throw ArgumentError('Unsupported type: ${other.runtimeType}');
+  }
+
+  P operator /(other) {
+    if (other is num) {
+      return P(x / other, y / other);
+    } else if (other is P) {
+      return P(x / other.x, y / other.y);
+    }
+    throw ArgumentError('Unsupported type: ${other.runtimeType}');
+  }
+
+  double get length => sqrt(x * x + y * y);
+
+  /// Returns the distance between `this` and [other].
+  /// ```dart
+  /// var distanceTo = const P(0, 0).distanceTo(const P(0, 0)); // 0.0
+  /// distanceTo = const P(0, 0).distanceTo(const P(10, 0)); // 10.0
+  /// distanceTo = const P(0, 0).distanceTo(const P(0, -10)); // 10.0
+  /// distanceTo = const P(-10, 0).distanceTo(const P(100, 0)); // 110.0
+  /// ```
+  double distanceTo(P other) {
+    var dx = x - other.x;
+    var dy = y - other.y;
+    return sqrt(dx * dx + dy * dy);
+  }
+
+  P rotate(double radians) => P(
+      x * cos(radians) - y * sin(radians), x * sin(radians) + y * cos(radians));
+
+  bool isEqual(P other, [double epsilon = 1e-3]) =>
       x.equals(other.x, epsilon) && y.equals(other.y, epsilon);
+
+  @override
+  bool operator ==(Object other) =>
+      other is P && x == other.x && y == other.y;
+
+  @override
+  int get hashCode => Object.hash(x.hashCode, y.hashCode);
 
   LineSegment lineTo(P other) => LineSegment(this, other);
 
@@ -43,16 +100,4 @@ extension PointExt on P {
   }
 }
 
-typedef R = Rectangle<double>;
-
-extension RectangleExt on R {
-  R includePoint(double x, double y) =>
-      R(min(left, x), min(top, y),
-          max(right, x) - min(left, x), max(bottom, y) - min(top, y));
-
-  R includeX(double x) =>
-      R.fromPoints(P(min(left, x), top), P(max(right, x), bottom));
-
-  R includeY(double y) =>
-      R.fromPoints(P(left, min(top, y)), P(right, max(bottom, y)));
-}
+const origin = P(0, 0);

@@ -1,4 +1,4 @@
-import 'segment.dart';
+import 'package:vector_path/vector_path.dart';
 
 ///
 class CubicSegment extends Segment {
@@ -62,7 +62,57 @@ class CubicSegment extends Segment {
 
   @override
   R get boundingBox {
-    throw UnimplementedError();
+    R ret = R.fromPoints(p1, p2);
+
+    P c = -p1 + c1;
+    P b = p1 - c1 * 2 + c2;
+    P a = -p1 + c1 * 3 - c2 * 3 + p2;
+
+    P h = b * b - a * c;
+
+    if (h.x > 0) {
+      h = P(sqrt(h.x), h.y);
+      double t = (-b.x - h.x) / a.x;
+      if (t > 0 && t < 1) {
+        double s = 1 - t;
+        double q = s * s * s * p1.x +
+            3 * s * s * t * c1.x +
+            3 * s * t * t * c2.x +
+            t * t * t * p2.x;
+        ret = ret.includeX(q);
+      }
+      t = (-b.x + h.x) / a.x;
+      if (t > 0 && t < 1) {
+        double s = 1 - t;
+        double q = s * s * s * p1.x +
+            3 * s * s * t * c1.x +
+            3 * s * t * t * c2.x +
+            t * t * t * p2.x;
+        ret = ret.includeX(q);
+      }
+    }
+    if (h.y > 0) {
+      h = P(h.x, sqrt(h.y));
+      double t = (-b.y - h.y) / a.y;
+      if (t > 0 && t < 1) {
+        double s = 1 - t;
+        double q = s * s * s * p1.y +
+            3 * s * s * t * c1.y +
+            3 * s * t * t * c2.y +
+            t * t * t * p2.y;
+        ret = ret.includeY(q);
+      }
+      t = (-b.y + h.y) / a.y;
+      if (t > 0 && t < 1) {
+        double s = 1 - t;
+        double q = s * s * s * p1.y +
+            3 * s * s * t * c1.y +
+            3 * s * t * t * c2.y +
+            t * t * t * p2.y;
+        ret = ret.includeY(q);
+      }
+    }
+    return ret;
   }
 }
 

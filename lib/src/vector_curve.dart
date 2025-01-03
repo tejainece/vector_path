@@ -1,9 +1,6 @@
 import 'dart:collection';
 
-import 'package:vector_path/src/mapper/mapper.dart';
-
-import 'segment/segment.dart';
-import 'segments.dart';
+import 'package:vector_path/vector_path.dart';
 
 export 'segments.dart';
 

@@ -70,7 +70,7 @@ class Ellipse {
 
   P pointAtAngle(double angle) {
     final unitCircleTransform = this.unitCircleTransform;
-    return unitCircleTransform.apply(pointOnCircle(angle));
+    return unitCircleTransform.apply(P.onCircle(angle));
   }
 
   Radian angleOfPoint(P point) {
@@ -253,7 +253,7 @@ class Ellipse {
   (double, double) xBounds() {
     final axis =
         P(unitCircleTransform.elementAt(0), unitCircleTransform.elementAt(1));
-    var r = axis.magnitude;
+    var r = axis.length;
     var mid = unitCircleTransform.elementAt(2);
     return (
       mid - r,
@@ -265,7 +265,7 @@ class Ellipse {
       xBoundsWithAngle() {
     final axis =
         P(unitCircleTransform.elementAt(0), unitCircleTransform.elementAt(1));
-    var r = axis.magnitude;
+    var r = axis.length;
     var mid = unitCircleTransform.elementAt(2);
     final angle = axis.angle;
     return (
@@ -277,7 +277,7 @@ class Ellipse {
   (double, double) yBounds() {
     final axis =
         P(unitCircleTransform.elementAt(3), unitCircleTransform.elementAt(4));
-    var r = axis.magnitude;
+    var r = axis.length;
     var mid = unitCircleTransform.elementAt(5);
     return (
       mid - r,
@@ -289,7 +289,7 @@ class Ellipse {
       yBoundsWithAngle() {
     final axis =
         P(unitCircleTransform.elementAt(3), unitCircleTransform.elementAt(4));
-    var r = axis.magnitude;
+    var r = axis.length;
     var mid = unitCircleTransform.elementAt(5);
     final angle = axis.angle;
     return (

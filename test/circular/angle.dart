@@ -20,7 +20,7 @@ class _CircularArcAngleCase {
   bool get clockwise => endAngle > startAngle;
 
   CircularArcSegment get arc => CircularArcSegment(
-      pointOnCircle(startAngle.value), pointOnCircle(endAngle.value), 1,
+      P.onCircle(startAngle.value), P.onCircle(endAngle.value), 1,
       clockwise: clockwise);
 }
 

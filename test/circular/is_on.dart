@@ -12,21 +12,21 @@ class _IsOnCircularArcCase {
 
   static List<_IsOnCircularArcCase> cases = [
     _IsOnCircularArcCase(
-        CircularArcSegment(pointOnCircle(0.2), pointOnCircle(0.5), 1,
+        CircularArcSegment(P.onCircle(0.2), P.onCircle(0.5), 1,
             clockwise: false),
-        pointOnCircle(0.3),
+        P.onCircle(0.3),
         true,
         true),
     _IsOnCircularArcCase(
-        CircularArcSegment(pointOnCircle(0.2), pointOnCircle(0.5), 1,
+        CircularArcSegment(P.onCircle(0.2), P.onCircle(0.5), 1,
             clockwise: false),
-        pointOnCircle(0.6),
+        P.onCircle(0.6),
         false,
         true),
     _IsOnCircularArcCase(
-        CircularArcSegment(pointOnCircle(0.2), pointOnCircle(0.5), 1,
+        CircularArcSegment(P.onCircle(0.2), P.onCircle(0.5), 1,
             clockwise: false),
-        pointOnCircle(0.1),
+        P.onCircle(0.1),
         false,
         true),
   ];

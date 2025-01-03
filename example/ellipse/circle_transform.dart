@@ -13,7 +13,7 @@ void main() {
   print(res);
 
   final angle = pi / 3;
-  final p = pointOnCircle(angle);
+  final p = P.onCircle(angle);
   print(p);
   final p1 = uct.apply(p);
   print(p1);

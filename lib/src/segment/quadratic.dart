@@ -1,4 +1,4 @@
-import 'segment.dart';
+import 'package:vector_path/vector_path.dart';
 
 class QuadraticSegment extends Segment {
   @override
@@ -61,7 +61,18 @@ class QuadraticSegment extends Segment {
 
   @override
   R get boundingBox {
-    throw UnimplementedError();
+    R ret = R.fromPoints(p1, p2);
+    if (ret.containsPoint(c)) return ret;
+    P t = (p1 - c) / (p1 - c * 2 + p2);
+    P s = P(1 - t.x, 1 - t.y);
+    P p = s * s * p1 + s * t * c * 2 + t * t * p2;
+    if (!p.x.isNaN) {
+      ret = ret.includeX(p.x);
+    }
+    if (!p.y.isNaN) {
+      ret = ret.includeY(p.y);
+    }
+    return ret;
   }
 }
 

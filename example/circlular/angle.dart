@@ -9,8 +9,8 @@ void main() {
   final largeArc =
       Radian((endAngle.value - startAngle.value).abs()) > Radian(pi);
   final arc = CircularArcSegment(
-      pointOnCircle(startAngle.value, radius, center),
-      pointOnCircle(endAngle.value, radius, center),
+      P.onCircle(startAngle.value, radius, center),
+      P.onCircle(endAngle.value, radius, center),
       radius,
       clockwise: clockwise,
       largeArc: largeArc);

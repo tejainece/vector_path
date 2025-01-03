@@ -1,6 +1,4 @@
-import 'dart:math';
-
-import 'segment.dart';
+import 'package:vector_path/vector_path.dart';
 
 class CircularArcSegment extends Segment {
   @override
@@ -44,7 +42,7 @@ class CircularArcSegment extends Segment {
     } else {
       angle = startAngle + this.angle.value * t;
     }
-    return pointOnCircle(angle.value, radius, center);
+    return P.onCircle(angle.value, radius, center);
   }
 
   @override

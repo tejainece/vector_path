@@ -1,6 +1,4 @@
-import 'package:vector_path/src/mapper/mapper.dart';
-import 'package:vector_path/src/segment/segment.dart';
-import 'package:vector_path/src/vector_curve.dart';
+import 'package:vector_path/vector_path.dart';
 
 extension SegementIterableExt on Iterable<Segment> {
   String? validate() {

@@ -1,4 +1,4 @@
-import 'package:vector_path/src/segment/segment.dart';
+import 'package:vector_path/vector_path.dart';
 
 export 'bifurcator.dart';
 export 'cardinal.dart';
