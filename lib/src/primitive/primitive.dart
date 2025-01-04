@@ -23,8 +23,11 @@ class P {
       return P(x + other, y + other);
     } else if (other is P) {
       return P(x + other.x, y + other.y);
+    } else if(other is Point) {
+      return P(x + other.x, y + other.y);
+    } else {
+      return P(x + other.dx, y + other.dy);
     }
-    throw ArgumentError('Unsupported type: ${other.runtimeType}');
   }
 
   P operator -(other) {
@@ -32,8 +35,11 @@ class P {
       return P(x - other, y - other);
     } else if (other is P) {
       return P(x - other.x, y - other.y);
+    } else if(other is Point) {
+      return P(x - other.x, y - other.y);
+    } else {
+      return P(x - other.dx, y - other.dy);
     }
-    throw ArgumentError('Unsupported type: ${other.runtimeType}');
   }
 
   P operator *(other) {
@@ -41,8 +47,11 @@ class P {
       return P(x * other, y * other);
     } else if (other is P) {
       return P(x * other.x, y * other.y);
+    } else if(other is Point) {
+      return P(x * other.x, y * other.y);
+    } else {
+      return P(x * other.dx, y * other.dy);
     }
-    throw ArgumentError('Unsupported type: ${other.runtimeType}');
   }
 
   P operator /(other) {
@@ -50,11 +59,16 @@ class P {
       return P(x / other, y / other);
     } else if (other is P) {
       return P(x / other.x, y / other.y);
+    } else if(other is Point) {
+      return P(x / other.x, y / other.y);
+    } else {
+      return P(x / other.dx, y / other.dy);
     }
-    throw ArgumentError('Unsupported type: ${other.runtimeType}');
   }
 
-  double get length => sqrt(x * x + y * y);
+  double get length => sqrt(lengthSquared);
+
+  double get lengthSquared => x * x + y * y;
 
   /// Returns the distance between `this` and [other].
   /// ```dart
@@ -98,6 +112,11 @@ class P {
         throw ArgumentError('Invalid index: $index');
     }
   }
+
+  @override
+  String toString() => 'P($x, $y)';
+
+  static const origin = P(0, 0);
 }
 
-const origin = P(0, 0);
+const origin = P.origin;

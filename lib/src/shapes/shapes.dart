@@ -15,5 +15,7 @@ abstract class Shape {
 abstract class ClosedShape extends Shape {
   const ClosedShape();
 
+  bool containsPoint(P point);
+
   double get area;
 }

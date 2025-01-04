@@ -124,4 +124,9 @@ class ArcSegment extends Segment {
   late final Radian startAngle = ellipse.angleOfPoint(p1);
 
   late final Radian endAngle = ellipse.angleOfPoint(p2);
+
+  @override
+  List<P> intersect(Segment other) {
+    throw UnimplementedError();
+  }
 }

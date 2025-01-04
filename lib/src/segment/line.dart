@@ -85,21 +85,15 @@ class LineSegment extends Segment with ILine {
 
   P pointAtDistanceFromP2(double distance) => lerp(1 - distance / length);
 
-  P pointAtDistanceFrom(P p, double distance) {
-    if (!hasPoint(p)) {
-      throw Exception('Point $p is not on the line');
-    }
-    final dist1 = p1.distanceTo(p);
-    final dist2 = p2.distanceTo(p);
-    if (dist1 >= dist2) {
-      return LineSegment(p, p1).lerp(distance / dist1);
-    }
-    return LineSegment(p, p2).lerp(distance / dist2);
-  }
-
-  bool hasPoint(P p, {double epsilon = 1e-3}) =>
+  bool isOnExtendedLine(P p, {double epsilon = 1e-3}) =>
       ((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)).abs() <
-      epsilon;
+          epsilon;
+
+  bool hasPoint(P p, {double epsilon = 1e-3}) {
+    if(!isOnExtendedLine(p, epsilon: epsilon)) return false;
+    if(p.x < min(p1.x, p2.x) || p.x > max(p1.x, p2.x)) return false;
+    return true;
+  }
 
   @override
   LineSegment reversed() => LineSegment(p2, p1);
@@ -133,17 +127,113 @@ class LineSegment extends Segment with ILine {
 
   @override
   R get boundingBox => R.fromPoints(p1, p2);
+
+  late final LineStandardForm standardForm =
+      LineStandardForm.fromPoints(p1, p2);
+
+  @override
+  List<P> intersect(Segment other) {
+    if (other is LineSegment) {
+      final ret = intersectLineSegment(other);
+      return ret != null ? [ret] : [];
+    }
+    throw ArgumentError(
+        'Finding intersect LineSegment with ${other.runtimeType} is not implemented');
+  }
+
+  P? intersectLineSegment(LineSegment other) {
+    final ret = standardForm.intersect(other.standardForm);
+    if(!hasPoint(ret) || !other.hasPoint(ret)) return null;
+    return ret;
+  }
+
+  /// https://mathworld.wolfram.com/Circle-LineIntersection.html
+  List<P> intersectCircle(Circle circle) {
+    final ret = <P>[];
+    final center = circle.center;
+    final det = p1.x * p2.y - p2.x * p1.y;
+    final r2 = circle.radius * circle.radius;
+    final det2 = det * det;
+    final dx = p2.x - p1.x;
+    final dy = p2.y - p1.y;
+    final discriminant = r2 * center.lengthSquared - det2;
+    if (discriminant < 0) {
+      return ret;
+    } else if (discriminant == 0) {
+      ret.add(
+          P(det * dy / center.lengthSquared, -det * dx / center.lengthSquared));
+      return ret;
+    }
+    final discriminantSqrt = sqrt(discriminant);
+    final y1 = (-det * dx - dy.abs() * discriminantSqrt) / center.lengthSquared;
+    final y2 = (-det * dx + dy.abs() * discriminantSqrt) / center.lengthSquared;
+    final x1 =
+        (det * dy - dy.sign * dx * discriminantSqrt) / center.lengthSquared;
+    final x2 =
+        (det * dy + dy.sign * dx * discriminantSqrt) / center.lengthSquared;
+    ret.add(P(x1, y1));
+    ret.add(P(x2, y2));
+    return ret;
+  }
 }
 
-class Line with ILine {
+class LineVectorForm with ILine {
   final P p;
   @override
   final Radian angle;
 
-  const Line(this.p, this.angle);
+  const LineVectorForm(this.p, this.angle);
 
   @override
   double get slope => angle.slope;
+}
+
+class LineSlopeForm with ILine {
+  final double m;
+
+  final double c;
+
+  const LineSlopeForm(this.m, this.c);
+
+  @override
+  Radian get angle => Radian(atan(m));
+
+  @override
+  double get slope => m;
+
+  @override
+  String toString() => 'y = $m * x + $c';
+}
+
+class LineStandardForm with ILine {
+  final double a;
+  final double b;
+  final double c;
+
+  const LineStandardForm(this.a, this.b, this.c);
+
+  factory LineStandardForm.fromPoints(P p1, P p2) {
+    final a = p2.y - p1.y;
+    final b = p1.x - p2.x;
+    final c = p1.y * (p2.x - p1.x) - (p2.y - p1.y) * p1.x;
+    return LineStandardForm(a, b, c);
+  }
+
+  @override
+  double get slope => -a / b;
+
+  @override
+  Radian get angle => Radian(atan2(a, b));
+
+  @override
+  String toString() => '$a * x + $b * y + $c = 0';
+
+  P intersect(LineStandardForm other) {
+    final div = other.a * b - other.b * a;
+    final x = (other.b * c - other.c * b) / div;
+    final y = (-other.a * c + other.c * a) / div;
+    return P(x, y);
+  }
 }
 
 extension PointsLineSegmentExt on Iterable<P> {

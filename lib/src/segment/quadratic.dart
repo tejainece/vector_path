@@ -60,6 +60,7 @@ class QuadraticSegment extends Segment {
   int get hashCode => Object.hash(p1, p2, c);
 
   @override
+  /// https://iquilezles.org/articles/bezierbbox/
   R get boundingBox {
     R ret = R.fromPoints(p1, p2);
     if (ret.containsPoint(c)) return ret;
@@ -73,6 +74,11 @@ class QuadraticSegment extends Segment {
       ret = ret.includeY(p.y);
     }
     return ret;
+  }
+
+  @override
+  List<P> intersect(Segment other) {
+    throw UnimplementedError();
   }
 }
 

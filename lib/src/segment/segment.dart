@@ -52,4 +52,6 @@ abstract class Segment {
     ret.add(prev);
     return ret;
   }
+
+  List<P> intersect(Segment other);
 }

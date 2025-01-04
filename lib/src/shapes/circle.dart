@@ -1,6 +1,6 @@
 import 'package:vector_path/vector_path.dart';
 
-class Circle {
+class Circle implements ClosedShape {
   final P center;
   final double radius;
 
@@ -30,8 +30,10 @@ class Circle {
     return true;
   }
 
+  @override
   late final double area = pi * radius * radius;
 
+  @override
   late final double perimeter = 2 * pi * radius;
 
   P lerp(double t) => pointAtAngle(2 * pi * t);
@@ -43,4 +45,11 @@ class Circle {
     final angle = angleOfPoint(point);
     return angle.value / (2 * pi);
   }
+
+  @override
+  bool containsPoint(P point) => point.distanceTo(center) <= radius;
+
+  @override
+  R get boundingBox =>
+      R(center.x - radius, center.y - radius, radius * 2, radius * 2);
 }

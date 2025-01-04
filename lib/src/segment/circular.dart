@@ -156,4 +156,9 @@ class CircularArcSegment extends Segment {
     }
     return ret;
   }
+
+  @override
+  List<P> intersect(Segment other) {
+    throw UnimplementedError();
+  }
 }

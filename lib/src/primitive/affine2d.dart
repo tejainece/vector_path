@@ -17,6 +17,15 @@ class Affine2d {
       this.shearY = 0,
       this.translateY = 0});
 
+  factory Affine2d.scaler(double s) => Affine2d(scaleX: s, scaleY: s);
+
+  factory Affine2d.rotator(double angle) => Affine2d(
+        scaleX: cos(angle),
+        shearX: -sin(angle),
+        scaleY: cos(angle),
+        shearY: sin(angle),
+      );
+
   factory Affine2d.fromMatrix(Float64List m) {
     assert(m.length == 9);
     assert(m[6] == 0);
@@ -31,14 +40,29 @@ class Affine2d {
         translateY: m[5]);
   }
 
-  factory Affine2d.scaler(double s) => Affine2d(scaleX: s, scaleY: s);
+  factory Affine2d.fromMatrix4Cols(Float64List m) {
+    assert(m.length == 16);
 
-  factory Affine2d.rotator(double angle) => Affine2d(
-        scaleX: cos(angle),
-        shearX: -sin(angle),
-        scaleY: cos(angle),
-        shearY: sin(angle),
-      );
+    assert(m[2] == 0);
+    assert(m[6] == 0);
+    assert(m[10] == 1);
+
+    assert(m[8] == 0);
+    assert(m[9] == 0);
+    assert(m[14] == 0);
+
+    assert(m[3] == 0);
+    assert(m[7] == 0);
+    assert(m[11] == 0);
+    assert(m[15] == 1);
+    return Affine2d(
+        scaleX: m[0],
+        shearX: m[4],
+        translateX: m[12],
+        shearY: m[1],
+        scaleY: m[5],
+        translateY: m[13]);
+  }
 
   Affine2d scale(double sx, double sy) => Affine2d(
       scaleX: scaleX * sx,
