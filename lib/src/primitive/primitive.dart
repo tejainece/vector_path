@@ -120,3 +120,17 @@ class P {
 }
 
 const origin = P.origin;
+
+extension PIterableExt on Iterable<P> {
+  bool equals(Iterable<P> other, {double epsilon = 1e-3}) {
+    final it1 = iterator;
+    final it2 = other.iterator;
+
+    while (true) {
+      if (!it1.moveNext()) return !it2.moveNext();
+      if (!it2.moveNext()) return false;
+
+      if (!it1.current.isEqual(it2.current, epsilon)) return false;
+    }
+  }
+}

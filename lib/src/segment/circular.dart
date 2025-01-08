@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:vector_path/vector_path.dart';
 
 class CircularArcSegment extends Segment {

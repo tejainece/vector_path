@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:vector_path/vector_path.dart';
 
-class Ellipse {
+class Ellipse implements ClosedShape {
   final P center;
 
   final P radii;
@@ -166,6 +168,7 @@ class Ellipse {
         integralRiemannSums(0, t, _ellipticIntegrand(m), t * radii.x * 20);
   }();
 
+  @override
   late final double perimeter = 4 * quart;
 
   double arcLengthAtT(double t) {
@@ -225,6 +228,7 @@ class Ellipse {
 
   double get m => 1 - (radii.y * radii.y) / (radii.x * radii.x);
 
+  @override
   double get area => pi * radii.x * radii.y;
 
   LineSegment tangentAtT(double t) {
@@ -248,6 +252,13 @@ class Ellipse {
         perimeter / 2;
     return ArcSegment(pointAtAngle(start.value), pointAtAngle(end.value), radii,
         rotation: rotation, largeArc: largeArc, clockwise: clockwise);
+  }
+
+  @override
+  R get boundingBox {
+    final xs = xBounds();
+    final ys = yBounds();
+    return R.fromPoints(P(xs.$1, ys.$1), P(xs.$2, ys.$2));
   }
 
   (double, double) xBounds() {
@@ -304,6 +315,24 @@ class Ellipse {
 
   static double Function(num t) _ellipticIntegrand(double m) {
     return (t) => sqrt(1 - pow(sin(t), 2) * m);
+  }
+
+  late final cosRotation = cos(rotation);
+
+  late final sinRotation = sin(rotation);
+
+  @override
+  bool containsPoint(P point) {
+    final dp = point - center;
+    double x2 = dp.x * cosRotation + dp.y * sinRotation;
+    x2 *= x2;
+    double y2 = dp.x * sinRotation - dp.y * cosRotation;
+    y2 *= y2;
+    double rx2 = radii.x;
+    rx2 *= rx2;
+    double ry2 = radii.y;
+    ry2 *= ry2;
+    return x2 / rx2 + y2 / ry2 <= 1;
   }
 }
 

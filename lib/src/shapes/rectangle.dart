@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:vector_path/vector_path.dart';
 
 class R implements ClosedShape {
@@ -13,7 +14,9 @@ class R implements ClosedShape {
   /// The height of the rectangle.
   final double height;
 
-  const R(this.left, this.top, this.width, this.height);
+  const R(this.left, this.top, this.width, this.height)
+      : assert(width >= 0),
+        assert(height >= 0);
 
   factory R.fromPoints(P p1, P p2) {
     final left = min(p1.x, p2.x);
@@ -37,8 +40,8 @@ class R implements ClosedShape {
       other is Rectangle &&
       left == other.left &&
       top == other.top &&
-      right == other.right &&
-      bottom == other.bottom;
+      width == other.width &&
+      height == other.height;
 
   @override
   int get hashCode => Object.hash(left, top, right, bottom);
@@ -85,6 +88,7 @@ class R implements ClosedShape {
   }
 
   /// Tests whether [another] is inside or along the edges of `this`.
+  @override
   bool containsPoint(P another) {
     return another.x >= left &&
         another.x <= left + width &&
@@ -99,6 +103,24 @@ class R implements ClosedShape {
   P get bottomRight => P(left + width, top + height);
 
   P get bottomLeft => P(left, top + height);
+  
+  P get center => P(left + width / 2, top + height / 2);
+  
+  P get topCenter => P(left + width / 2, top);
+
+  P get bottomCenter => P(left + width / 2, bottom);
+
+  P get leftCenter => P(left, top + height / 2);
+
+  P get rightCenter => P(right, top + height / 2);
+
+  R shift(P offset) => R(left + offset.x, top + offset.y, width, height);
+
+  R inflate(double delta) =>
+      R(left - delta, top - delta, width + 2 * delta, height + 2 * delta);
+
+  R deflate(double delta) =>
+      R(left + delta, top + delta, width - 2 * delta, height - 2 * delta);
 
   /// Returns a new rectangle which completely contains `this` and [other].
   R include(R other) {

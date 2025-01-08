@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:vector_math/vector_math.dart';
 import 'package:vector_path/vector_path.dart';
 
