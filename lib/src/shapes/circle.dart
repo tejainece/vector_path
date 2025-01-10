@@ -20,6 +20,11 @@ class Circle implements ClosedShape {
     return perimeter * radians / (2 * pi);
   }
 
+  double arcLengthBetweenT(double t1, double t2, {bool clockwise = false}) {
+    final t = Clamp.unit.difference(t1, t2, clockwise: clockwise);
+    return perimeter * t;
+  }
+
   CircularArcSegment arc(Radian start, Radian end) {
     return CircularArcSegment(
         pointAtAngle(start.value), pointAtAngle(end.value), radius,

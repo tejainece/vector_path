@@ -152,27 +152,27 @@ class LineSegment extends Segment with ILine {
   /// https://mathworld.wolfram.com/Circle-LineIntersection.html
   List<P> intersectCircle(Circle circle) {
     final ret = <P>[];
-    final center = circle.center;
     final det = p1.x * p2.y - p2.x * p1.y;
     final r2 = circle.radius * circle.radius;
     final det2 = det * det;
     final dx = p2.x - p1.x;
     final dy = p2.y - p1.y;
-    final discriminant = r2 * center.lengthSquared - det2;
+    final dr2 = dx * dx + dy * dy;
+    final discriminant = r2 * dr2 - det2;
     if (discriminant < 0) {
       return ret;
     } else if (discriminant == 0) {
       ret.add(
-          P(det * dy / center.lengthSquared, -det * dx / center.lengthSquared));
+          P(det * dy / dr2, -det * dx / dr2));
       return ret;
     }
     final discriminantSqrt = sqrt(discriminant);
-    final y1 = (-det * dx - dy.abs() * discriminantSqrt) / center.lengthSquared;
-    final y2 = (-det * dx + dy.abs() * discriminantSqrt) / center.lengthSquared;
+    final y1 = (-det * dx - dy.abs() * discriminantSqrt) / dr2;
+    final y2 = (-det * dx + dy.abs() * discriminantSqrt) / dr2;
     final x1 =
-        (det * dy - dy.sign * dx * discriminantSqrt) / center.lengthSquared;
+        (det * dy - dy.sign * dx * discriminantSqrt) / dr2;
     final x2 =
-        (det * dy + dy.sign * dx * discriminantSqrt) / center.lengthSquared;
+        (det * dy + dy.sign * dx * discriminantSqrt) / dr2;
     ret.add(P(x1, y1));
     ret.add(P(x2, y2));
     return ret;

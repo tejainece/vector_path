@@ -30,7 +30,7 @@ class Clamp {
   }
 
   double lerp(double t1, double t2, double t, {bool clockwise = false}) {
-    print('t1: $t1, t2: $t2, t: $t, clockwise: $clockwise');
+    // TODO take min and max into account
     if (clockwise) {
       if (t1 < t2) {
         return clamp(t2 + (1 - t2 + t1) * t);
@@ -44,6 +44,7 @@ class Clamp {
   }
 
   double ilerp(double t1, double t2, double t, {bool clockwise = false}) {
+    // TODO take min and max into account
     if (clockwise) {
       if (t1 < t2) {
         return clamp(t1 - t) / clamp(t2 - t1);
@@ -80,6 +81,33 @@ class Clamp {
       return value >= end && value <= start;
     }
     return value >= end || value <= start;
+  }
+
+  double differenceCW(double start, double end) {
+    start = clamp(start);
+    end = clamp(end);
+    if (areValuesEqual(start, end)) return 0;
+    if (start > end) {
+      return start - end;
+    }
+    return (start - min) + (max - end);
+  }
+
+  double difference(double start, double end, {bool clockwise = false}) {
+    if (clockwise) {
+      return differenceCW(start, end);
+    }
+    return differenceCCW(start, end);
+  }
+
+  double differenceCCW(double start, double end) {
+    start = clamp(start);
+    end = clamp(end);
+    if (areValuesEqual(start, end)) return 0;
+    if (start < end) {
+      return end - start;
+    }
+    return (end - min) + (max - start);
   }
 
   @override

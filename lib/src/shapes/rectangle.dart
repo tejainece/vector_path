@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:vector_path/vector_path.dart';
 
 class R implements ClosedShape {
@@ -25,6 +26,10 @@ class R implements ClosedShape {
     final height = max(p1.y, p2.y) - top;
     return R(left, top, width, height);
   }
+
+  /// Creates rectangle at [center] with the given [width] and [height].
+  factory R.centerAt(P center, double width, double height) =>
+      R(center.x - width / 2, center.y - height / 2, width, height);
 
   /// The x-coordinate of the right edge.
   double get right => left + width;
@@ -103,9 +108,9 @@ class R implements ClosedShape {
   P get bottomRight => P(left + width, top + height);
 
   P get bottomLeft => P(left, top + height);
-  
+
   P get center => P(left + width / 2, top + height / 2);
-  
+
   P get topCenter => P(left + width / 2, top);
 
   P get bottomCenter => P(left + width / 2, bottom);
@@ -147,4 +152,10 @@ class R implements ClosedShape {
 
   @override
   double get area => width * height;
+
+  bool equals(R other, [double epsilon = 1e-6]) =>
+      left.equals(other.left, epsilon) &&
+      top.equals(other.top, epsilon) &&
+      width.equals(other.width, epsilon) &&
+      height.equals(other.height, epsilon);
 }
