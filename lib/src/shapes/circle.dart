@@ -59,4 +59,10 @@ class Circle implements ClosedShape {
   @override
   R get boundingBox =>
       R(center.x - radius, center.y - radius, radius * 2, radius * 2);
+
+  double evalX(double y) =>
+      sqrt(radius * radius - (y - center.y) * (y - center.y)) + center.x;
+
+  double evalY(double x) =>
+      sqrt(radius * radius - (x - center.x) * (x - center.x)) + center.y;
 }

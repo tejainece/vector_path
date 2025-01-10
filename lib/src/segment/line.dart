@@ -89,11 +89,11 @@ class LineSegment extends Segment with ILine {
 
   bool isOnExtendedLine(P p, {double epsilon = 1e-3}) =>
       ((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)).abs() <
-          epsilon;
+      epsilon;
 
   bool hasPoint(P p, {double epsilon = 1e-3}) {
-    if(!isOnExtendedLine(p, epsilon: epsilon)) return false;
-    if(p.x < min(p1.x, p2.x) || p.x > max(p1.x, p2.x)) return false;
+    if (!isOnExtendedLine(p, epsilon: epsilon)) return false;
+    if (p.x < min(p1.x, p2.x) || p.x > max(p1.x, p2.x)) return false;
     return true;
   }
 
@@ -145,7 +145,7 @@ class LineSegment extends Segment with ILine {
 
   P? intersectLineSegment(LineSegment other) {
     final ret = standardForm.intersect(other.standardForm);
-    if(!hasPoint(ret) || !other.hasPoint(ret)) return null;
+    if (!hasPoint(ret) || !other.hasPoint(ret)) return null;
     return ret;
   }
 
@@ -162,20 +162,25 @@ class LineSegment extends Segment with ILine {
     if (discriminant < 0) {
       return ret;
     } else if (discriminant == 0) {
-      ret.add(
-          P(det * dy / dr2, -det * dx / dr2));
+      ret.add(P(det * dy / dr2, -det * dx / dr2));
       return ret;
     }
     final discriminantSqrt = sqrt(discriminant);
+    double dySign = dy.isNegative ? -1 : 1;
     final y1 = (-det * dx - dy.abs() * discriminantSqrt) / dr2;
     final y2 = (-det * dx + dy.abs() * discriminantSqrt) / dr2;
-    final x1 =
-        (det * dy - dy.sign * dx * discriminantSqrt) / dr2;
-    final x2 =
-        (det * dy + dy.sign * dx * discriminantSqrt) / dr2;
+    final x1 = (det * dy - dySign * dx * discriminantSqrt) / dr2;
+    final x2 = (det * dy + dySign * dx * discriminantSqrt) / dr2;
     ret.add(P(x1, y1));
     ret.add(P(x2, y2));
     return ret;
+  }
+
+  List<P> intersectEllipse(Ellipse ellipse) {
+    // https://mathworld.wolfram.com/Ellipse-LineIntersection.html
+    // TODO
+
+    throw UnimplementedError();
   }
 }
 
@@ -236,6 +241,39 @@ class LineStandardForm with ILine {
     final y = (-other.a * c + other.c * a) / div;
     return P(x, y);
   }
+
+  List<P> intersectCircle(Circle circle) {
+    double a2 = a * a;
+    double b2 = b * b;
+    double c2 = c * c;
+    double r2 = circle.radius * circle.radius;
+    double desc = a2 * r2 + b2 * r2 - c2;
+    if (desc < 0) {
+      return [];
+    }
+    double partn = sqrt(desc);
+    double part1 = a * partn / (a2 + b2);
+    double part2 = b * c / (a2 + b2);
+    P p1;
+    P p2;
+    if (a == 0) {
+      double x = circle.evalX(-part2);
+      p1 = P(-x, -part2);
+      p2 = P(x, -part2);
+    } else {
+      p1 = P((b * (part1 + part2) - c) / a, -part1 - part2);
+      p2 = P(-(b * (part1 - part2) + c) / a, part1 - part2);
+    }
+    print('p1: $p1, p2: $p2');
+    if (p1.isEqual(p2)) {
+      return [p1];
+    }
+    return [p1, p2];
+  }
+
+  double evalY(double x) => -(a * x + c) / b;
+
+  double evalX(double y) => -(b * y + c) / a;
 }
 
 extension PointsLineSegmentExt on Iterable<P> {

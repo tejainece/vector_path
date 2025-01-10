@@ -11,6 +11,9 @@ class Ellipse implements ClosedShape {
 
   Ellipse(this.radii, {this.center = origin, this.rotation = 0});
 
+  factory Ellipse.fromR(R rect) =>
+      Ellipse(P(rect.width / 2, rect.height / 2), center: rect.center);
+
   factory Ellipse.fromSvgParameters(P p1, P p2, P radii,
       {double rotation = 0, bool clockwise = false, bool largeArc = false}) {
     final d = P((p1.x - p2.x) / 2, (p1.y - p2.y) / 2);
