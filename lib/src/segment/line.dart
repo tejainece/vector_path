@@ -246,14 +246,27 @@ class LineStandardForm with ILine {
     double a2 = a * a;
     double b2 = b * b;
     double c2 = c * c;
+    double h = circle.center.x;
+    double k = circle.center.y;
+    double h2 = h * h;
+    double k2 = k * k;
     double r2 = circle.radius * circle.radius;
-    double desc = a2 * r2 + b2 * r2 - c2;
+    // y: -part1 + part2}, {x: -(B*(A*sqrt(-A**2*H**2 + A**2*r**2 - 2*A*B*H*K - 2*A*C*H - B**2*K**2 + B**2*r**2 - 2*B*C*K - C**2)/(A**2 + B**2) + (A**2*K - A*B*H - B*C)/(A**2 + B**2)) + C)/A, y: A*sqrt(-A**2*H**2 + A**2*r**2 - 2*A*B*H*K - 2*A*C*H - B**2*K**2 + B**2*r**2 - 2*B*C*K - C**2)/(A**2 + B**2) + (A**2*K - A*B*H - B*C)/(A**2 + B**2)}]
+
+    double desc = -a2 * h2 +
+        a2 * r2 -
+        2 * a * b * h * k -
+        2 * a * c * h -
+        b2 * k2 +
+        b2 * r2 -
+        2 * b * c * k -
+        c2;
     if (desc < 0) {
       return [];
     }
     double partn = sqrt(desc);
     double part1 = a * partn / (a2 + b2);
-    double part2 = b * c / (a2 + b2);
+    double part2 = (a2 * k - a * b * h - b * c) / (a2 + b2);
     P p1;
     P p2;
     if (a == 0) {
@@ -261,8 +274,8 @@ class LineStandardForm with ILine {
       p1 = P(-x, -part2);
       p2 = P(x, -part2);
     } else {
-      p1 = P((b * (part1 + part2) - c) / a, -part1 - part2);
-      p2 = P(-(b * (part1 - part2) + c) / a, part1 - part2);
+      p1 = P((b * (part1 - part2) - c) / a, -part1 + part2);
+      p2 = P(-(b * (part1 + part2) + c) / a, part1 + part2);
     }
     print('p1: $p1, p2: $p2');
     if (p1.isEqual(p2)) {
