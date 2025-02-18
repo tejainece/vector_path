@@ -320,16 +320,16 @@ class Ellipse implements ClosedShape {
     return (t) => sqrt(1 - pow(sin(t), 2) * m);
   }
 
-  late final cosRotation = cos(rotation);
+  late final costh = cos(rotation);
 
-  late final sinRotation = sin(rotation);
+  late final sinth = sin(rotation);
 
   @override
   bool containsPoint(P point) {
     final dp = point - center;
-    double x2 = dp.x * cosRotation + dp.y * sinRotation;
+    double x2 = dp.x * costh + dp.y * sinth;
     x2 *= x2;
-    double y2 = dp.x * sinRotation - dp.y * cosRotation;
+    double y2 = dp.x * sinth - dp.y * costh;
     y2 *= y2;
     double rx2 = radii.x;
     rx2 *= rx2;

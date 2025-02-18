@@ -175,13 +175,6 @@ class LineSegment extends Segment with ILine {
     ret.add(P(x2, y2));
     return ret;
   }
-
-  List<P> intersectEllipse(Ellipse ellipse) {
-    // https://mathworld.wolfram.com/Ellipse-LineIntersection.html
-    // TODO
-
-    throw UnimplementedError();
-  }
 }
 
 class LineVectorForm with ILine {
@@ -232,6 +225,11 @@ class LineStandardForm with ILine {
   @override
   Radian get angle => Radian(atan2(a, b));
 
+  LineSegment lineWithX(double x1, double x2) =>
+      LineSegment(P(x1, evalY(x1)), P(x2, evalY(x2)));
+
+  List<double> get coefficients => [a, b, c];
+
   @override
   String toString() => '$a * x + $b * y + $c = 0';
 
@@ -251,8 +249,6 @@ class LineStandardForm with ILine {
     double h2 = h * h;
     double k2 = k * k;
     double r2 = circle.radius * circle.radius;
-    // y: -part1 + part2}, {x: -(B*(A*sqrt(-A**2*H**2 + A**2*r**2 - 2*A*B*H*K - 2*A*C*H - B**2*K**2 + B**2*r**2 - 2*B*C*K - C**2)/(A**2 + B**2) + (A**2*K - A*B*H - B*C)/(A**2 + B**2)) + C)/A, y: A*sqrt(-A**2*H**2 + A**2*r**2 - 2*A*B*H*K - 2*A*C*H - B**2*K**2 + B**2*r**2 - 2*B*C*K - C**2)/(A**2 + B**2) + (A**2*K - A*B*H - B*C)/(A**2 + B**2)}]
-
     double desc = -a2 * h2 +
         a2 * r2 -
         2 * a * b * h * k -
@@ -277,11 +273,66 @@ class LineStandardForm with ILine {
       p1 = P((b * (part1 - part2) - c) / a, -part1 + part2);
       p2 = P(-(b * (part1 + part2) + c) / a, part1 + part2);
     }
-    print('p1: $p1, p2: $p2');
     if (p1.isEqual(p2)) {
       return [p1];
     }
     return [p1, p2];
+  }
+
+  // https://mathworld.wolfram.com/Ellipse-LineIntersection.html
+  List<P> intersectEllipse(Ellipse ellipse) {
+    final costh = ellipse.costh;
+    final sinth = ellipse.sinth;
+    final costh2 = costh * costh;
+    final sinth2 = sinth * sinth;
+    final r1 = ellipse.radii.x;
+    final r2 = ellipse.radii.y;
+    final r12 = r1 * r1;
+    final r22 = r2 * r2;
+    final a2 = a * a;
+    final b2 = b * b;
+    final c2 = c * c;
+    final h = ellipse.center.x;
+    final k = ellipse.center.y;
+    final h2 = h * h;
+    final k2 = k * k;
+    double A = costh2 / r12 -
+        2 * costh * a * sinth / b +
+        a2 * sinth2 / b2 +
+        sinth2 / r22 +
+        2 * sinth * a * costh / b +
+        a2 * costh2 / b2;
+    double B = -2 * costh2 * h / r12 -
+        2 * costh * c * sinth / b -
+        2 * costh * k * sinth / r12 +
+        2 * h * costh * a * sinth / b +
+        2 * a * c * sinth2 / b2 +
+        2 * a * sinth2 * k / b -
+        2 * sinth2 * h / r22 +
+        2 * sinth * c * costh / b +
+        2 * sinth * k * costh / r22 -
+        2 * h * sinth * a * costh / b +
+        2 * a * c * costh2 / b2 +
+        2 * a * costh2 * k / b;
+    double C = -1 +
+        h2 * costh2 / r12 +
+        2 * h * costh * c * sinth / b +
+        2 * h * costh * k * sinth / r12 +
+        c2 * sinth2 / b2 +
+        2 * c * sinth2 * k / b +
+        k2 * sinth2 / r12 +
+        h2 * sinth2 / r22 -
+        2 * h * sinth * c * costh / b -
+        2 * h * sinth * k * costh / r22 +
+        c2 * costh2 / b2 +
+        2 * c * costh2 * k / b +
+        k2 * costh2 / r22;
+    final discriminant = B * B - 4 * A * C;
+    final x1 = (-B - sqrt(discriminant))/ (2 * A);
+    final x2 = (-B + sqrt(discriminant)) / (2 * A);
+    final y1 = -(a * x1 + c) / b;
+    final y2 = -(a * x2 + c) / b;
+    return [P(x1, y1), P(x2, y2)];
   }
 
   double evalY(double x) => -(a * x + c) / b;
