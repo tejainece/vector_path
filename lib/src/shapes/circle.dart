@@ -57,6 +57,13 @@ class Circle implements ClosedShape {
   bool containsPoint(P point) => point.distanceTo(center) <= radius;
 
   @override
+  bool isPointOn(P point) {
+    final ys = evalY(point.x);
+    if (ys.isEmpty) return false;
+    return ys.any((y) => (y - point.y).abs() < 1e-6);
+  }
+
+  @override
   R get boundingBox =>
       R(center.x - radius, center.y - radius, radius * 2, radius * 2);
 
@@ -247,7 +254,6 @@ class Circle implements ClosedShape {
     final y1 = (-b - sqrt(discriminant)) / (2 * a);
     final y2 = (-b + sqrt(discriminant)) / (2 * a);
     final ys = {y1, y2}.toList();
-    // TODO
     final ret = <P>{
       ...ys.fold(
           <P>[],

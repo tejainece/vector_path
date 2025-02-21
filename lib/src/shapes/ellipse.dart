@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:vector_path/vector_path.dart';
 
+/// ((x-h)*cosθ + (y-k)*sinθ)^2/r1^2 + ((x-h)*sinθ - (y-k)^cosθ)*2/r2^2 - 1 = 0
 class Ellipse implements ClosedShape {
   final P center;
 
@@ -336,6 +337,141 @@ class Ellipse implements ClosedShape {
     double ry2 = radii.y;
     ry2 *= ry2;
     return x2 / rx2 + y2 / ry2 <= 1;
+  }
+
+  @override
+  bool isPointOn(P point) {
+    final ys = evalY(point.x);
+    if (ys.isEmpty) return false;
+    return ys.any((y) => (y - point.y).abs() < 1e-6);
+  }
+
+  List<double> evalX(double y) {
+    final y2 = y * y;
+    final r1 = radii.x;
+    final r12 = r1 * r1;
+    final r2 = radii.y;
+    final r22 = r2 * r2;
+    final h = center.x;
+    final k = center.y;
+    final k2 = k * k;
+    final sinth2 = sinth * sinth;
+    final sinth4 = sinth2 * sinth2;
+    final costh2 = costh * costh;
+    final costh4 = costh2 * costh2;
+    final x1 = costh2 * h * r22 / ((costh2 * r22 + sinth2 * r12)) -
+        costh * y * sinth * r22 / ((costh2 * r22 + sinth2 * r12)) +
+        costh * k * sinth * r22 / ((costh2 * r22 + sinth2 * r12)) +
+        sinth2 * h * r12 / ((costh2 * r22 + sinth2 * r12)) +
+        sinth * y * costh * r12 / ((costh2 * r22 + sinth2 * r12)) -
+        sinth * k * costh * r12 / ((costh2 * r22 + sinth2 * r12)) +
+        r2 *
+            r1 *
+            pow(
+                -2 * costh2 * y2 * sinth2 +
+                    4 * costh2 * y * sinth2 * k -
+                    2 * costh2 * k2 * sinth2 +
+                    costh2 * r22 -
+                    costh4 * y2 +
+                    2 * costh4 * y * k -
+                    costh4 * k2 +
+                    sinth2 * r12 -
+                    sinth4 * y2 +
+                    2 * sinth4 * y * k -
+                    sinth4 * k2,
+                0.5) /
+            ((costh2 * r22 + sinth2 * r12));
+    final ret = <double>[if (!x1.isNaN) x1];
+    final x2 = costh2 * h * r22 / ((costh2 * r22 + sinth2 * r12)) -
+        costh * y * sinth * r22 / ((costh2 * r22 + sinth2 * r12)) +
+        costh * k * sinth * r22 / ((costh2 * r22 + sinth2 * r12)) +
+        sinth2 * h * r12 / ((costh2 * r22 + sinth2 * r12)) +
+        sinth * y * costh * r12 / ((costh2 * r22 + sinth2 * r12)) -
+        sinth * k * costh * r12 / ((costh2 * r22 + sinth2 * r12)) -
+        r2 *
+            r1 *
+            pow(
+                -2 * costh2 * y2 * sinth2 +
+                    4 * costh2 * y * sinth2 * k -
+                    2 * costh2 * k2 * sinth2 +
+                    costh2 * r22 -
+                    costh4 * y2 +
+                    2 * costh4 * y * k -
+                    costh4 * k2 +
+                    sinth2 * r12 -
+                    sinth4 * y2 +
+                    2 * sinth4 * y * k -
+                    sinth4 * k2,
+                0.5) /
+            ((costh2 * r22 + sinth2 * r12));
+    if (!x2.isNaN) {
+      if (ret.every((v) => (v - x2).abs() > 1e-6)) ret.add(x2);
+    }
+    return ret;
+  }
+
+  List<double> evalY(double x) {
+    final x2 = x * x;
+    final r1 = radii.x;
+    final r12 = r1 * r1;
+    final r2 = radii.y;
+    final r22 = r2 * r2;
+    final h = center.x;
+    final h2 = h * h;
+    final k = center.y;
+    final sinth2 = sinth * sinth;
+    final sinth4 = sinth2 * sinth2;
+    final costh2 = costh * costh;
+    final costh4 = costh2 * costh2;
+    final y1 = -x * costh * sinth * r22 / ((sinth2 * r22 + costh2 * r12)) +
+        h * costh * sinth * r22 / ((sinth2 * r22 + costh2 * r12)) +
+        sinth2 * k * r22 / ((sinth2 * r22 + costh2 * r12)) +
+        x * sinth * costh * r12 / ((sinth2 * r22 + costh2 * r12)) -
+        h * sinth * costh * r12 / ((sinth2 * r22 + costh2 * r12)) +
+        costh2 * k * r12 / ((sinth2 * r22 + costh2 * r12)) +
+        r2 *
+            r1 *
+            pow(
+                -2 * x2 * costh2 * sinth2 +
+                    4 * x * costh2 * sinth2 * h -
+                    2 * h2 * costh2 * sinth2 +
+                    sinth2 * r22 -
+                    sinth4 * x2 +
+                    2 * sinth4 * x * h -
+                    sinth4 * h2 +
+                    costh2 * r12 -
+                    costh4 * x2 +
+                    2 * costh4 * x * h -
+                    costh4 * h2,
+                0.5) /
+            ((sinth2 * r22 + costh2 * r12));
+    final ret = [if (!y1.isNaN) y1];
+    final y2 = -x * costh * sinth * r22 / ((sinth2 * r22 + costh2 * r12)) +
+        h * costh * sinth * r22 / ((sinth2 * r22 + costh2 * r12)) +
+        sinth2 * k * r22 / ((sinth2 * r22 + costh2 * r12)) +
+        x * sinth * costh * r12 / ((sinth2 * r22 + costh2 * r12)) -
+        h * sinth * costh * r12 / ((sinth2 * r22 + costh2 * r12)) +
+        costh2 * k * r12 / ((sinth2 * r22 + costh2 * r12)) -
+        r2 *
+            r1 *
+            pow(
+                -2 * x2 * costh2 * sinth2 +
+                    4 * x * costh2 * sinth2 * h -
+                    2 * h2 * costh2 * sinth2 +
+                    sinth2 * r22 -
+                    sinth4 * x2 +
+                    2 * sinth4 * x * h -
+                    sinth4 * h2 +
+                    costh2 * r12 -
+                    costh4 * x2 +
+                    2 * costh4 * x * h -
+                    costh4 * h2,
+                0.5) /
+            ((sinth2 * r22 + costh2 * r12));
+    if (!y2.isNaN) {
+      if (ret.every((v) => (v - y2).abs() > 1e-6)) ret.add(y2);
+    }
+    return ret;
   }
 }
 

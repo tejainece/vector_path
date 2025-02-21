@@ -94,11 +94,27 @@ class R implements ClosedShape {
 
   /// Tests whether [another] is inside or along the edges of `this`.
   @override
-  bool containsPoint(P another) {
-    return another.x >= left &&
-        another.x <= left + width &&
-        another.y >= top &&
-        another.y <= top + height;
+  bool containsPoint(P another) =>
+      another.x >= left &&
+      another.x <= left + width &&
+      another.y >= top &&
+      another.y <= top + height;
+
+  @override
+  bool isPointOn(P point) {
+    final ys = evalY(point.x);
+    if (ys.isEmpty) return false;
+    return ys.any((y) => (y - point.y).abs() < 1e-6);
+  }
+
+  List<double> evalY(double x) {
+    if (x < left || x > left + width) return [];
+    return [top, bottom];
+  }
+
+  List<double> evalX(double y) {
+    if (y < top || y > top + height) return [];
+    return [left, right];
   }
 
   P get topLeft => P(left, top);

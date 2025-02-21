@@ -17,5 +17,7 @@ abstract class ClosedShape extends Shape {
 
   bool containsPoint(P point);
 
+  bool isPointOn(P point);
+
   double get area;
 }
