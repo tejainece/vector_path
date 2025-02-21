@@ -116,6 +116,8 @@ class P {
   @override
   String toString() => 'P($x, $y)';
 
+  bool get isNaN => x.isNaN || y.isNaN;
+
   static const origin = P(0, 0);
 }
 

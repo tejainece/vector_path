@@ -249,7 +249,7 @@ class LineStandardForm with ILine {
     double h2 = h * h;
     double k2 = k * k;
     double r2 = circle.radius * circle.radius;
-    double desc = -a2 * h2 +
+    double discriminant = -a2 * h2 +
         a2 * r2 -
         2 * a * b * h * k -
         2 * a * c * h -
@@ -257,16 +257,16 @@ class LineStandardForm with ILine {
         b2 * r2 -
         2 * b * c * k -
         c2;
-    if (desc < 0) {
+    if (discriminant.isNegative) {
       return [];
     }
-    double partn = sqrt(desc);
+    double partn = sqrt(discriminant);
     double part1 = a * partn / (a2 + b2);
     double part2 = (a2 * k - a * b * h - b * c) / (a2 + b2);
     P p1;
     P p2;
     if (a == 0) {
-      double x = circle.evalX(-part2);
+      double x = circle.evalX(-part2).first;
       p1 = P(-x, -part2);
       p2 = P(x, -part2);
     } else {
@@ -279,7 +279,6 @@ class LineStandardForm with ILine {
     return [p1, p2];
   }
 
-  // https://mathworld.wolfram.com/Ellipse-LineIntersection.html
   List<P> intersectEllipse(Ellipse ellipse) {
     final costh = ellipse.costh;
     final sinth = ellipse.sinth;
@@ -296,39 +295,44 @@ class LineStandardForm with ILine {
     final k = ellipse.center.y;
     final h2 = h * h;
     final k2 = k * k;
-    double A = costh2 / r12 -
-        2 * costh * a * sinth / b +
-        a2 * sinth2 / b2 +
+    final A = costh2 / r12 -
+        2 * costh * a * sinth / (b * r12) +
+        a2 * sinth2 / (b2 * r12) +
         sinth2 / r22 +
-        2 * sinth * a * costh / b +
-        a2 * costh2 / b2;
+        2 * sinth * a * costh / (b * r22) +
+        a2 * costh2 / (b2 * r22);
     double B = -2 * costh2 * h / r12 -
-        2 * costh * c * sinth / b -
+        2 * costh * c * sinth / (b * r12) -
         2 * costh * k * sinth / r12 +
-        2 * h * costh * a * sinth / b +
-        2 * a * c * sinth2 / b2 +
-        2 * a * sinth2 * k / b -
+        2 * h * costh * a * sinth / (b * r12) +
+        2 * a * c * sinth2 / (b2 * r12) +
+        2 * a * sinth2 * k / (b * r12) -
         2 * sinth2 * h / r22 +
-        2 * sinth * c * costh / b +
+        2 * sinth * c * costh / (b * r22) +
         2 * sinth * k * costh / r22 -
-        2 * h * sinth * a * costh / b +
-        2 * a * c * costh2 / b2 +
-        2 * a * costh2 * k / b;
+        2 * h * sinth * a * costh / (b * r22) +
+        2 * a * c * costh2 / (b2 * r22) +
+        2 * a * costh2 * k / (b * r22);
     double C = -1 +
         h2 * costh2 / r12 +
-        2 * h * costh * c * sinth / b +
+        2 * h * costh * c * sinth / (b * r12) +
         2 * h * costh * k * sinth / r12 +
-        c2 * sinth2 / b2 +
-        2 * c * sinth2 * k / b +
+        c2 * sinth2 / (b2 * r12) +
+        2 * c * sinth2 * k / (b * r12) +
         k2 * sinth2 / r12 +
         h2 * sinth2 / r22 -
-        2 * h * sinth * c * costh / b -
+        2 * h * sinth * c * costh / (b * r22) -
         2 * h * sinth * k * costh / r22 +
-        c2 * costh2 / b2 +
-        2 * c * costh2 * k / b +
+        c2 * costh2 / (b2 * r22) +
+        2 * c * costh2 * k / (b * r22) +
         k2 * costh2 / r22;
+    // print('a: $a, b: $b, c: $c, h: $h, k: $k, r1: $r1, r2: $r2');
     final discriminant = B * B - 4 * A * C;
-    final x1 = (-B - sqrt(discriminant))/ (2 * A);
+    if (discriminant.isNegative) {
+      return [];
+    }
+    // print('A: $A, B: $B, C: $C; discriminant: $discriminant');
+    final x1 = (-B - sqrt(discriminant)) / (2 * A);
     final x2 = (-B + sqrt(discriminant)) / (2 * A);
     final y1 = -(a * x1 + c) / b;
     final y2 = -(a * x2 + c) / b;
