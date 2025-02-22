@@ -71,8 +71,8 @@ class Circle implements ClosedShape {
     final sq = sqrt(radius * radius - (y - center.y) * (y - center.y));
     final x1 = center.x - sq;
     final x2 = center.x + sq;
-    List<double> ret = [x1];
-    if (x2 != x1) ret.add(x2);
+    List<double> ret = [if(!x1.isNaN) x1];
+    if (!x2.isNaN && ret.every((x) => (x - x2).abs() > 1e-6)) ret.add(x2);
     return ret;
   }
 
@@ -80,8 +80,8 @@ class Circle implements ClosedShape {
     final sq = sqrt(radius * radius - (x - center.x) * (x - center.x));
     final y1 = center.y - sq;
     final y2 = center.y + sq;
-    List<double> ret = [y1];
-    if (y2 != y1) ret.add(y2);
+    List<double> ret = [if (!y1.isNaN) y1];
+    if (!y2.isNaN && ret.every((y) => (y - y2).abs() > 1e-6)) ret.add(y2);
     return ret;
   }
 
@@ -170,7 +170,8 @@ class Circle implements ClosedShape {
           (List<P> list, x) =>
               list..addAll(evalY(x).map((y) => P(x, y)))).toList(),
     }.toList();
-    print(ret);
+    ret.removeWhere((p) => !other.isPointOn(p));
+    // print(ret);
     return ret;
   }
 
@@ -247,7 +248,7 @@ class Circle implements ClosedShape {
         k12 -
         r12;
     final discriminant = b * b - 4 * a * c;
-    print('$a $b $c $discriminant');
+    // print('$a $b $c $discriminant');
     if (discriminant.isNegative) {
       return [];
     }
@@ -260,7 +261,8 @@ class Circle implements ClosedShape {
           (List<P> list, y) =>
               list..addAll(evalX(y).map((x) => P(x, y)))).toList(),
     }.toList();
-    print(ret);
+    ret.removeWhere((p) => !other.isPointOn(p));
+    // print(ret);
     return ret;
   }
 
