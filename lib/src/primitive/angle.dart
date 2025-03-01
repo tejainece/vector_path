@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:vector_path/src/primitive/clamp.dart';
+import 'package:ramanujan/src/primitive/clamp.dart';
 
 extension NumAngleExt on num {
   double get toRadian => (this * pi) / 180;

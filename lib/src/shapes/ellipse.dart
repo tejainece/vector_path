@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 /// ((x-h)*cosθ + (y-k)*sinθ)^2/r1^2 + ((x-h)*sinθ - (y-k)^cosθ)*2/r2^2 - 1 = 0
 class Ellipse implements ClosedShape {

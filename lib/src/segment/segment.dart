@@ -1,4 +1,4 @@
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 export 'arc.dart';
 export 'circular.dart';

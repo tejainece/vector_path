@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 void main() {
   final rotation = pi / 3;

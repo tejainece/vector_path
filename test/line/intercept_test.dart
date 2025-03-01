@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 class _PerpendicularCase {
   final LineSegment line;

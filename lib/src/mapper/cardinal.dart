@@ -1,4 +1,4 @@
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 SegmentMapperWithControls cardinalSmoother({double tension = 2}) {
   return (P c1, Segment segment, P c2) {

@@ -1,4 +1,4 @@
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 void main() {
   final rot = Affine2d(translateX: 100, translateY: 100);

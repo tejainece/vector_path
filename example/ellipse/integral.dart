@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:calculess/calculess.dart';
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 typedef Func = double Function(num t);
 

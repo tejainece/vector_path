@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 class Circle implements ClosedShape {
   final P center;
@@ -274,5 +274,10 @@ class Circle implements ClosedShape {
       return _intersectCircleUsingYFormula(other);
     }
     return _intersectCircleUsingXFormula(other);
+  }
+
+  List<P> intersectEllipse(Ellipse other) {
+    // TODO
+    throw UnimplementedError();
   }
 }

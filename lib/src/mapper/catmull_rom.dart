@@ -1,4 +1,4 @@
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 SegmentMapperWithControls catmullRomSmoother(
     {int steps = 100, double tension = 0.5}) {

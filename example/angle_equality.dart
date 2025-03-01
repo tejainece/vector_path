@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:vector_path/src/primitive/angle.dart';
+import 'package:ramanujan/src/primitive/angle.dart';
 
 void main() {
   final angle1 = Radian(0.001);

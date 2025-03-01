@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:vector_path/src/primitive/primitive.dart';
+import 'package:ramanujan/src/primitive/primitive.dart';
 
 /// [ scaleX shearX translateX ]
 /// [ shearY scaleY translateY ]

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 void main() {
   final center = P(0, 0);

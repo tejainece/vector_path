@@ -1,5 +1,5 @@
 import 'package:vector_math/vector_math.dart';
-import 'package:vector_path/vector_path.dart';
+import 'package:ramanujan/ramanujan.dart';
 
 extension Affine2dVMExt on Affine2d {
   Matrix3 get matrix3 {
