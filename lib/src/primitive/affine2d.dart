@@ -135,10 +135,17 @@ class Affine2d {
       ]);
 
   Float64List get matrix4d => Float64List.fromList([
-        scaleX, shearX, translateX, 0, // row1
-        shearY, scaleY, translateY, 0, // row2
+        scaleX, shearX, 0, translateX, // row1
+        shearY, scaleY, 0, translateY, // row2
         0, 0, 1, 0, // row3
         0, 0, 0, 1, // row4
+      ]);
+
+  Float64List get matrix4dColMajor => Float64List.fromList([
+        scaleX, shearY, 0, 0, // col1
+        shearX, scaleY, 0, 0, // col2
+        0, 0, 1, 0, // col3
+        translateX, translateY, 0, 1, // col4
       ]);
 
   Affine2d operator *(value) {

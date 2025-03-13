@@ -23,7 +23,7 @@ class P {
       return P(x + other, y + other);
     } else if (other is P) {
       return P(x + other.x, y + other.y);
-    } else if(other is Point) {
+    } else if (other is Point) {
       return P(x + other.x, y + other.y);
     } else {
       return P(x + other.dx, y + other.dy);
@@ -35,7 +35,7 @@ class P {
       return P(x - other, y - other);
     } else if (other is P) {
       return P(x - other.x, y - other.y);
-    } else if(other is Point) {
+    } else if (other is Point) {
       return P(x - other.x, y - other.y);
     } else {
       return P(x - other.dx, y - other.dy);
@@ -47,7 +47,7 @@ class P {
       return P(x * other, y * other);
     } else if (other is P) {
       return P(x * other.x, y * other.y);
-    } else if(other is Point) {
+    } else if (other is Point) {
       return P(x * other.x, y * other.y);
     } else {
       return P(x * other.dx, y * other.dy);
@@ -59,7 +59,7 @@ class P {
       return P(x / other, y / other);
     } else if (other is P) {
       return P(x / other.x, y / other.y);
-    } else if(other is Point) {
+    } else if (other is Point) {
       return P(x / other.x, y / other.y);
     } else {
       return P(x / other.dx, y / other.dy);
@@ -83,6 +83,8 @@ class P {
     return sqrt(dx * dx + dy * dy);
   }
 
+  P get normalized => P(x / length, y / length);
+
   P rotate(double radians) => P(
       x * cos(radians) - y * sin(radians), x * sin(radians) + y * cos(radians));
 
@@ -90,8 +92,7 @@ class P {
       x.equals(other.x, epsilon) && y.equals(other.y, epsilon);
 
   @override
-  bool operator ==(Object other) =>
-      other is P && x == other.x && y == other.y;
+  bool operator ==(Object other) => other is P && x == other.x && y == other.y;
 
   @override
   int get hashCode => Object.hash(x.hashCode, y.hashCode);
@@ -119,6 +120,8 @@ class P {
   bool get isNaN => x.isNaN || y.isNaN;
 
   static const origin = P(0, 0);
+
+  static const zero = P(0, 0);
 }
 
 const origin = P.origin;
